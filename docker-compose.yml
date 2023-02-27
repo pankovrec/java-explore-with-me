@@ -22,8 +22,8 @@ services:
       - POSTGRES_PASSWORD=ewm
 
   ewm-service:
-    image: ewm-main
-    build: ewm-main
+    image: main
+    build: main
     ports:
        - "8080:8080"
     depends_on:
