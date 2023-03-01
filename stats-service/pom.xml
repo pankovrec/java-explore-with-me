@@ -10,8 +10,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>stats</artifactId>
+    <artifactId>stats-service</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>stats-service</name>
+    <description>stats-service</description>
     <packaging>pom</packaging>
+
     <modules>
         <module>stats-client</module>
         <module>stats-dto</module>
