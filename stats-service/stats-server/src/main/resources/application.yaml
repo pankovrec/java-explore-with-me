@@ -5,8 +5,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ewm-statistic
     driver-class-name: org.postgresql.Driver
-    username: root
-    password: root
+    username: ewm
+    password: ewm
   jpa:
     hibernate:
       ddl-auto: none
