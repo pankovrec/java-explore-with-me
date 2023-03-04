@@ -74,11 +74,6 @@
                             <artifactId>checkstyle</artifactId>
                             <version>10.3</version>
                         </dependency>
-                        <dependency>
-                            <groupId>org.hibernate</groupId>
-                            <artifactId>hibernate-core</artifactId>
-                            <version>6.1.7.Final</version>
-                        </dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
