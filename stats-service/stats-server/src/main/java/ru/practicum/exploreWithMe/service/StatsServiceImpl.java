@@ -37,10 +37,8 @@ public class StatsServiceImpl implements StatsService {
             startDto = LocalDateTime.parse(URLDecoder.decode(start, StandardCharsets.UTF_8), dateTimeFormatter);
             endDto = LocalDateTime.parse(URLDecoder.decode(end, StandardCharsets.UTF_8), dateTimeFormatter);
         } else {
-            startDto = LocalDateTime.parse(URLDecoder.decode("1971-01-01 00:00:00", StandardCharsets.UTF_8),
-                    dateTimeFormatter);
-            endDto = LocalDateTime.parse(URLDecoder.decode("2101-01-01 00:00:00", StandardCharsets.UTF_8),
-                    dateTimeFormatter);
+            startDto = LocalDateTime.MIN;
+            endDto = LocalDateTime.MAX;
         }
         List<ViewStats> result;
         if (unique) {

@@ -20,9 +20,13 @@ public class Hit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "app", length = 50, nullable = false)
     private String app;
+    @Column(name = "uri", length = 100, nullable = false)
     private String uri;
+    @Column(name = "ip", length = 50, nullable = false)
     private String ip;
+    @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
     public Hit(Long id, String app, String uri, String ip, LocalDateTime timestamp) {
