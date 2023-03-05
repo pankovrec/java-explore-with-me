@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ewm
+    driver-class-name: org.postgresql.Driver
+    username: ewm
+    password: ewm
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+  sql:
+    init:
+      mode: always
+logging:
+  level:
+    org:
+      springframework:
+        orm.jpa: info
+        orm.jpa.JpaTransactionManager: debug
+        web.client.RestTemplate: debug
+        transaction: info
+        interceptor: trace
