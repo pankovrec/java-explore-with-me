@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Api error class
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
