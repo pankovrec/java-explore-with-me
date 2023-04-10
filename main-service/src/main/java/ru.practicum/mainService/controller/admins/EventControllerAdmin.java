@@ -9,7 +9,6 @@ import ru.practicum.mainService.service.admins.EventServiceAdmin;
 import ru.practicum.mainService.validator.EventValidator;
 
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -46,8 +45,8 @@ public class EventControllerAdmin {
 
     @PatchMapping(path = "/{eventId}")
     @Transactional
-    public EventFullDto patchEventAdmin(@NotNull @PathVariable(name = "eventId") Long eventId,
-                                        @NotNull @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
+    public EventFullDto patchEventAdmin(@PathVariable(name = "eventId") Long eventId,
+                                        @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
         validator.validateEvent(updateEventAdminRequest);
         log.info("Patch event id={}, eventUpd={}", eventId, updateEventAdminRequest);
         return eventService.patchEvent(eventId, updateEventAdminRequest);
