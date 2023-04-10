@@ -10,8 +10,6 @@ import ru.practicum.mainService.validator.EventValidator;
 
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
