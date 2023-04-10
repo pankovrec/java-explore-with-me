@@ -40,8 +40,8 @@ public class EventControllerAdmin {
                                              @RequestParam(name = "categories", required = false) List<Long> categories,
                                              @RequestParam(name = "rangeStart", required = false) String rangeStart,
                                              @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
-                                             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                             @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                             @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Get list events from={}, size={}", from, size);
         return eventService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
