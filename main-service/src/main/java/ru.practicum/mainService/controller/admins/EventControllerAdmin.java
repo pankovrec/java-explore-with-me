@@ -22,7 +22,6 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "admin/events")
 @Slf4j
-//@Validated
 
 public class EventControllerAdmin {
 
