@@ -5,10 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.EventMapper;
-import ru.practicum.mainService.dto.event.EventSpecifications;
+import ru.practicum.mainService.dto.event.EventSpecs;
 import ru.practicum.mainService.model.Event;
 import ru.practicum.mainService.repository.publics.EventRepositoryPublic;
 import ru.practicum.mainService.service.api.EventStatsService;
@@ -45,12 +44,12 @@ public class EventServicePublicImpl implements EventServicePublic {
 
         eventStatsService.postStats(request);
 
-        Specification<Event> spec = EventSpecifications.byText(text)
-                .and(EventSpecifications.byCategories(categories))
-                .and(EventSpecifications.byPaid(paid))
-                .and(EventSpecifications.byRangeStart(rangeStart))
-                .and(EventSpecifications.byRangeEnd(rangeEnd))
-                .and(EventSpecifications.byOnlyAvailable(onlyAvailable));
+        Specification<Event> spec = EventSpecs.byText(text)
+                .and(EventSpecs.byCategories(categories))
+                .and(EventSpecs.byPaid(paid))
+                .and(EventSpecs.byRangeStart(rangeStart))
+                .and(EventSpecs.byRangeEnd(rangeEnd))
+                .and(EventSpecs.byOnlyAvailable(onlyAvailable));
         Pageable pageRequest = PageRequest.of((from / size), size);
 
         List<Event> events = repository.findAll(spec, pageRequest);

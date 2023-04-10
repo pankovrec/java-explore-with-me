@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * EventSpecifications
  */
 
-public class EventSpecifications {
+public class EventSpecs {
 
     public static Specification<Event> byUsers(List<Long> users) {
         return (root, query, cb) -> users == null ? null : cb.in(root.get("initiator").get("id")).value(users);
