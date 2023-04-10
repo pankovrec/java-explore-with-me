@@ -9,8 +9,6 @@ import ru.practicum.mainService.model.Location;
 import ru.practicum.mainService.model.State;
 import ru.practicum.mainService.model.User;
 
-import java.time.LocalDateTime;
-
 /**
  * Event full dto
  */
@@ -25,14 +23,14 @@ public class EventFullDto {
     private String annotation;
     private CategoryDto category;
     private Long confirmedRequests;
-    private LocalDateTime createdOn;
+    private String createdOn;
     private String description;
-    private LocalDateTime eventDate;
+    private String eventDate;
     private UserShortDto initiator;
     private Location location;
     private Boolean paid;
     private Integer participantLimit;
-    private LocalDateTime publishedOn;
+    private String publishedOn;
     private Boolean requestModeration;
     private State state;
     private String title;
