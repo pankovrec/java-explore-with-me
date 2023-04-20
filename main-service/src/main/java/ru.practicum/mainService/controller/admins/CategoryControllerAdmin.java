@@ -17,7 +17,7 @@ import javax.validation.constraints.Positive;
 /**
  * Category controller admin
  */
-
+//test
 @RestController
 @RequestMapping(path = "/admin/categories")
 @Validated
