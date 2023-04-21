@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.StatsClient;
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.service.publics.EventServicePublic;
+import ru.practicum.stats.dto.HitDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
