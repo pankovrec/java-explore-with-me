@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.EventMapper;
-import ru.practicum.mainService.dto.event.EventSpecs;
+import ru.practicum.mainService.dto.event.EventSpecifications;
 import ru.practicum.mainService.dto.event.UpdateEventAdminRequest;
 import ru.practicum.mainService.error.exception.EventIncorrectStateForAdmin;
 import ru.practicum.mainService.model.Category;
@@ -49,11 +49,11 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
     public List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, String rangeStart,
                                         String rangeEnd, Integer from, Integer size) {
 
-        Specification<Event> spec = EventSpecs.byUsers(users)
-                .and(EventSpecs.byStates(states))
-                .and(EventSpecs.byCategories(categories))
-                .and(EventSpecs.byRangeStart(rangeStart))
-                .and(EventSpecs.byRangeEnd(rangeEnd));
+        Specification<Event> spec = EventSpecifications.byUsers(users)
+                .and(EventSpecifications.byStates(states))
+                .and(EventSpecifications.byCategories(categories))
+                .and(EventSpecifications.byRangeStart(rangeStart))
+                .and(EventSpecifications.byRangeEnd(rangeEnd));
 
         Pageable pageRequest = PageRequest.of((from / size), size);
 

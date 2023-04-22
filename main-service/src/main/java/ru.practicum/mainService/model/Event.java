@@ -1,5 +1,6 @@
 package ru.practicum.mainService.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,11 +30,13 @@ public class Event {
     private Category category;
     @Column(name = "confirmed_requests", nullable = false)
     private Long confirmedRequests;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
     @Column(name = "description", nullable = false)
     private String description;
     @Column(name = "event_date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     @ManyToOne
     @JoinColumn(name = "initiator_id", nullable = false)
@@ -47,6 +50,7 @@ public class Event {
     @Column(name = "participant_limit", nullable = false)
     private Integer participantLimit;
     @Column(name = "published_on")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     @Column(name = "request_moderation", nullable = false)
     private Boolean requestModeration;

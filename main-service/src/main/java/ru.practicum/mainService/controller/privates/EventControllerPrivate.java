@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.event.*;
 import ru.practicum.mainService.dto.request.ParticipationRequestDto;
@@ -14,6 +15,7 @@ import ru.practicum.mainService.validator.EventValidator;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -22,6 +24,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@Validated
 
 public class EventControllerPrivate {
 
@@ -36,16 +39,16 @@ public class EventControllerPrivate {
     }
 
     @GetMapping(path = "users/{userId}/events")
-    public List<EventShortDto> getEvents(@PathVariable(name = "userId") Long userId,
-                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                         @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    public List<EventShortDto> getEvents(@NotNull @PathVariable(name = "userId") Long userId,
+                                         @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                         @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Get list events by userId={}, from={}, size={}", userId, from, size);
         return eventService.getEvents(userId, from, size);
     }
 
     @GetMapping(path = "users/{userId}/events/{eventId}")
-    public EventFullDto getEventByEventId(@PathVariable(name = "userId") Long userId,
-                                          @PathVariable(name = "eventId") Long eventId) {
+    public EventFullDto getEventByEventId(@Positive @PathVariable(name = "userId") Long userId,
+                                          @Positive @PathVariable(name = "eventId") Long eventId) {
         log.info("Get full event by userId={} and id={}", userId, eventId);
         return eventService.getEventByEventId(userId, eventId);
     }
