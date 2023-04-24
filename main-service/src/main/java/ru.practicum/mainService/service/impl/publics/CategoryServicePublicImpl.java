@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.mainService.dto.category.CategoryDto;
 import ru.practicum.mainService.dto.category.CategoryMapper;
 import ru.practicum.mainService.error.exception.CategoryNotFoundException;
@@ -46,5 +45,4 @@ public class CategoryServicePublicImpl implements CategoryServicePublic {
         }
         return CategoryMapper.toCategoryDto(category.get());
     }
-
 }

@@ -1,10 +1,10 @@
 package ru.practicum.exploreWithMe.service;
 
-import ru.practicum.exploreWithMe.model.Hit;
-import ru.practicum.exploreWithMe.model.ViewStats;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.exploreWithMe.model.Hit;
+import ru.practicum.exploreWithMe.model.ViewStats;
 import ru.practicum.exploreWithMe.repository.StatsRepository;
 
 import java.net.URLDecoder;
@@ -41,10 +41,18 @@ public class StatsServiceImpl implements StatsService {
             endDto = LocalDateTime.MAX;
         }
         List<ViewStats> result;
-        if (unique) {
-            result = repository.getAllWithUniqueIp(startDto, endDto, uris);
+        if (uris == null || uris.isEmpty()) {
+            if (unique) {
+                result = repository.getAllStatsUniqueIp(startDto, endDto);
+            } else {
+                result = repository.getAllStats(startDto, endDto);
+            }
         } else {
-            result = repository.getAll(startDto, endDto, uris);
+            if (unique) {
+                result = repository.getAllWithUniqueIp(startDto, endDto, uris);
+            } else {
+                result = repository.getAll(startDto, endDto, uris);
+            }
         }
         return result;
     }

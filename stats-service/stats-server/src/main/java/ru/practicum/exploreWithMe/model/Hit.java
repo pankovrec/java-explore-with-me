@@ -28,12 +28,4 @@ public class Hit {
     private String ip;
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
-
-    public Hit(Long id, String app, String uri, String ip, LocalDateTime timestamp) {
-        this.id = id;
-        this.app = app;
-        this.uri = uri;
-        this.ip = ip;
-        this.timestamp = timestamp;
-    }
 }

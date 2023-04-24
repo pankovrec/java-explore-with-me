@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.mainService.dto.compilation.CompilationDto;
 import ru.practicum.mainService.dto.compilation.CompilationMapper;
 import ru.practicum.mainService.model.Compilation;
@@ -38,7 +37,6 @@ public class CompilationServicePublicImpl implements CompilationServicePublic {
         } else {
             compilations = repository.findAll(pageRequest).toList();
         }
-
         return compilations.stream()
                 .map(CompilationMapper::toCompilationDto).collect(Collectors.toList());
     }

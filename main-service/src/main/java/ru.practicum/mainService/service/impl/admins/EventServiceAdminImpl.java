@@ -52,8 +52,8 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
         Specification<Event> spec = EventSpecifications.byUsers(users)
                 .and(EventSpecifications.byStates(states))
                 .and(EventSpecifications.byCategories(categories))
-                .and(EventSpecifications.byRangeStart(rangeStart))
-                .and(EventSpecifications.byRangeEnd(rangeEnd));
+                .and(EventSpecifications.byStart(rangeStart))
+                .and(EventSpecifications.byEnd(rangeEnd));
 
         Pageable pageRequest = PageRequest.of((from / size), size);
 

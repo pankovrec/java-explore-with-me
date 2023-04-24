@@ -47,9 +47,9 @@ public class EventServicePublicImpl implements EventServicePublic {
         Specification<Event> spec = EventSpecifications.byText(text)
                 .and(EventSpecifications.byCategories(categories))
                 .and(EventSpecifications.byPaid(paid))
-                .and(EventSpecifications.byRangeStart(rangeStart))
-                .and(EventSpecifications.byRangeEnd(rangeEnd))
-                .and(EventSpecifications.byOnlyAvailable(onlyAvailable));
+                .and(EventSpecifications.byStart(rangeStart))
+                .and(EventSpecifications.byEnd(rangeEnd))
+                .and(EventSpecifications.byAvailable(onlyAvailable));
         Pageable pageRequest = PageRequest.of((from / size), size);
 
         List<Event> events = repository.findAll(spec, pageRequest);
@@ -71,5 +71,4 @@ public class EventServicePublicImpl implements EventServicePublic {
 
         return EventMapper.toFullEventDto(event);
     }
-
 }

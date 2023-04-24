@@ -29,27 +29,27 @@ public class EventSpecifications {
         return (root, query, cb) -> categories == null ? null : cb.in(root.get("category").get("id")).value(categories);
     }
 
-    public static Specification<Event> byRangeStart(String rangeStart) {
+    public static Specification<Event> byStart(String start) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
-        return (root, query, cb) -> rangeStart == null ? null : cb.greaterThan(root.get("eventDate"),
-                LocalDateTime.parse(rangeStart, formatter));
+        return (root, query, cb) -> start == null ? null : cb.greaterThan(root.get("eventDate"),
+                LocalDateTime.parse(start, formatter));
     }
 
-    public static Specification<Event> byRangeEnd(String rangeEnd) {
+    public static Specification<Event> byEnd(String end) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
-        return (root, query, cb) -> rangeEnd == null ? null : cb.lessThan(root.get("eventDate"),
-                LocalDateTime.parse(rangeEnd, formatter));
+        return (root, query, cb) -> end == null ? null : cb.lessThan(root.get("eventDate"),
+                LocalDateTime.parse(end, formatter));
     }
 
     public static Specification<Event> byText(String text) {
-        return byAnnotation(text).or(byDscription(text)).or(byTitle(text));
+        return byAnnotation(text).or(byDescription(text)).or(byTitle(text));
     }
 
     public static Specification<Event> byAnnotation(String text) {
         return (root, query, cb) -> text == null ? null : cb.like(cb.upper(root.get("annotation")), "%" + text.toUpperCase() + "%");
     }
 
-    public static Specification<Event> byDscription(String text) {
+    public static Specification<Event> byDescription(String text) {
         return (root, query, cb) -> text == null ? null : cb.like(cb.upper(root.get("description")), "%" + text.toUpperCase() + "%");
     }
 
@@ -61,8 +61,8 @@ public class EventSpecifications {
         return (root, query, cb) -> paid == null ? null : cb.equal(root.get("paid"), paid);
     }
 
-    public static Specification<Event> byOnlyAvailable(Boolean onlyAvailable) {
-        return (root, query, cb) -> (onlyAvailable == null || !onlyAvailable) ? null :
+    public static Specification<Event> byAvailable(Boolean available) {
+        return (root, query, cb) -> (available == null || !available) ? null :
                 cb.lessThanOrEqualTo(root.get("participantLimit"), root.get("confirmedRequests"));
     }
 }

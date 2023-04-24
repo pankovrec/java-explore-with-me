@@ -7,7 +7,6 @@ import ru.practicum.mainService.model.User;
  */
 
 public class UserMapper {
-
     public static User fromUserDto(UserDto dto) {
         return new User()
                 .setName(dto.getName())

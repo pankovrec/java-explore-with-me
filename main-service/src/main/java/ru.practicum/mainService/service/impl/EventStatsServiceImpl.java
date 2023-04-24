@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.StatsClient;
 import ru.practicum.mainService.model.Event;
 import ru.practicum.mainService.service.api.EventStatsService;
@@ -67,7 +66,6 @@ public class EventStatsServiceImpl implements EventStatsService {
             Long eventViews = viewsOptional.orElse(0L);
             views.put(id, eventViews);
         }
-
         return views;
     }
 
@@ -88,14 +86,11 @@ public class EventStatsServiceImpl implements EventStatsService {
     }
 
     private HitDto makeHitDto(HttpServletRequest request) {
-
         HitDto hitDto = new HitDto();
         hitDto.setIp(request.getRemoteAddr());
         hitDto.setUri(request.getRequestURI());
         hitDto.setTimestamp(LocalDateTime.now());
         hitDto.setApp("main-service");
-
         return hitDto;
     }
-
 }

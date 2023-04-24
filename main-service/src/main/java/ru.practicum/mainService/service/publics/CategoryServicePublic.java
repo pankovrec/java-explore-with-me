@@ -18,5 +18,4 @@ public interface CategoryServicePublic {
      * получить категорию по id
      */
     CategoryDto getCategoryById(Long catId);
-
 }
