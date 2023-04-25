@@ -99,19 +99,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         Optional<Event> eventOptional = repository.findById(eventId);
         Event event = eventOptional.get();
-
-        if (event.getState() != State.CANCELED && event.getState() != State.PENDING) {
-            throw new IncorrectStateEventException("Событие с таким статусом не может быть опубликовано.");
-        }
-
-        if (eventDto.getStateAction() != null)
-            if (eventDto.getStateAction() == StateAction.REJECT_EVENT ||
-                    eventDto.getStateAction() == StateAction.CANCEL_REVIEW) {
-                event.setState(State.CANCELED);
-            } else {
-                event.setState(State.PENDING);
-            }
-
+        checkStatus(eventDto, event);
         Event updatedEvent = repository.save(event);
         Map<Long, Long> stats = statsEventService.getStats(List.of(updatedEvent), false);
         updatedEvent.setViews(stats.get(eventId));
@@ -165,5 +153,19 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         result.setConfirmedRequests(confirmedRequests);
         result.setRejectedRequests(rejectedRequests);
         return result;
+    }
+
+    private static void checkStatus(UpdateUserRequest eventDto, Event event) {
+        if (event.getState() != State.CANCELED && event.getState() != State.PENDING) {
+            throw new IncorrectStateEventException("Событие с таким статусом не может быть опубликовано.");
+        }
+
+        if (eventDto.getStateAction() != null)
+            if (eventDto.getStateAction() == StateAction.REJECT_EVENT ||
+                    eventDto.getStateAction() == StateAction.CANCEL_REVIEW) {
+                event.setState(State.CANCELED);
+            } else {
+                event.setState(State.PENDING);
+            }
     }
 }

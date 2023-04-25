@@ -56,23 +56,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         Optional<Event> optional = eventRepository.findById(eventId);
 
         Event event = optional.get();
-        if (event.getInitiator().getId().equals(userId)) {
-            throw new RequestInvalidException("User cant request to his own event");
-        }
-
-        if (event.getState() != State.PUBLISHED) {
-            throw new RequestInvalidException("Event not published");
-        }
-
-        if ((event.getParticipantLimit() <= event.getConfirmedRequests()) &&
-                event.getParticipantLimit() > 0) {
-            throw new RequestInvalidException("Event reached limit");
-        }
-
-        List<Request> requests = repository.findAllByRequesterIdAndEventId(userId, eventId);
-        if (!requests.isEmpty()) {
-            throw new ExistRequestException("Request already exist");
-        }
+        check(userId, eventId, event);
 
         Request request = new Request();
         request.setRequester(user);
@@ -104,5 +88,25 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         Request updatedRequest = repository.save(request);
 
         return RequestMapper.toRequestDto(updatedRequest);
+    }
+
+    private void check(Long userId, Long eventId, Event event) {
+        if (event.getInitiator().getId().equals(userId)) {
+            throw new RequestInvalidException("Запрос не может оставить создатель");
+        }
+
+        if (event.getState() != State.PUBLISHED) {
+            throw new RequestInvalidException("Статус должен быть PUBLISHED");
+        }
+
+        if ((event.getParticipantLimit() <= event.getConfirmedRequests()) &&
+                event.getParticipantLimit() > 0) {
+            throw new RequestInvalidException("Исчерпан лимит участников");
+        }
+
+        List<Request> requests = repository.findAllByRequesterIdAndEventId(userId, eventId);
+        if (!requests.isEmpty()) {
+            throw new ExistRequestException("Такая запись уже есть");
+        }
     }
 }
