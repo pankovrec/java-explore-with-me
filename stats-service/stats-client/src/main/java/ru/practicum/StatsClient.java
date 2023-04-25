@@ -1,19 +1,16 @@
 package ru.practicum;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.stats.dto.HitDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Stats client
@@ -23,32 +20,27 @@ import java.util.Map;
 @Slf4j
 public class StatsClient extends BaseClient {
 
-@Autowired
-public StatsClient(@Value("${stats-service.url}") String serverUrl, RestTemplateBuilder builder) {
-    super(
-            builder
-                    .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
-                    .requestFactory(HttpComponentsClientHttpRequestFactory::new)
-                    .build()
-    );
-    log.info("creating stats with url = {}", serverUrl);
-}
+    private final String application;
 
-    public ResponseEntity<Object> sendHit(HitDto hitDto) {
-        return post("/hit", hitDto);
+    @Autowired
+    public StatsClient(@Value("${ewm_stats.url}") String serverUrl, RestTemplateBuilder builder, String application) {
+        super(
+                builder
+                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
+                        .requestFactory(HttpComponentsClientHttpRequestFactory::new)
+                        .build()
+        );
+        this.application = application;
     }
 
-    public ResponseEntity<Object> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        Map<String, Object> parameters = Map.of(
-                "start",  start.format(formatter),
-                "end",    end.format(formatter),
-                "uris",   uris,
-                "unique", unique);
+    public void hit(HttpServletRequest userRequest) {
+        HitDto hit = HitDto.builder()
+                .app(application)
+                .ip(userRequest.getRemoteAddr())
+                .uri(userRequest.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
 
-        log.info("get stats from = {} end = {} uris = {} ids = {}",
-                parameters.get("start"), parameters.get("end"), parameters.get("uris"), parameters.get("unique"));
-
-        return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
+        post("/hit", hit);
     }
 }
