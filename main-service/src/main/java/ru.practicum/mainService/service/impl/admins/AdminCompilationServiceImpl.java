@@ -8,9 +8,9 @@ import ru.practicum.mainService.dto.compilation.NewCompilationDto;
 import ru.practicum.mainService.dto.compilation.UpdateCompilationRequest;
 import ru.practicum.mainService.model.Compilation;
 import ru.practicum.mainService.model.Event;
-import ru.practicum.mainService.repository.admins.CompilationRepositoryAdmin;
-import ru.practicum.mainService.repository.admins.EventRepositoryAdmin;
-import ru.practicum.mainService.service.admins.CompilationServiceAdmin;
+import ru.practicum.mainService.repository.admins.AdminCompilationRepository;
+import ru.practicum.mainService.repository.admins.AdminEventRepository;
+import ru.practicum.mainService.service.admins.AdminCompilationService;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +20,14 @@ import java.util.Optional;
  */
 
 @Service
-public class AdminCompilationServiceImpl implements CompilationServiceAdmin {
+public class AdminCompilationServiceImpl implements AdminCompilationService {
 
-    private final CompilationRepositoryAdmin repository;
+    private final AdminCompilationRepository repository;
 
-    private final EventRepositoryAdmin eventRepository;
+    private final AdminEventRepository eventRepository;
 
     @Autowired
-    public AdminCompilationServiceImpl(CompilationRepositoryAdmin repository, EventRepositoryAdmin eventRepository) {
+    public AdminCompilationServiceImpl(AdminCompilationRepository repository, AdminEventRepository eventRepository) {
         this.repository = repository;
         this.eventRepository = eventRepository;
     }

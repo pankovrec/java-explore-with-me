@@ -1,4 +1,4 @@
-package ru.practicum.mainService.service.api;
+package ru.practicum.mainService.service.stats;
 
 import ru.practicum.mainService.model.Event;
 
@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * EventStatsService
  */
-public interface EventStatsService {
+public interface StatsEventService {
 
     /**
      * Получить статистику

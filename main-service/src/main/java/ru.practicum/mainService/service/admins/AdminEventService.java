@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * EventServiceAdmin
  */
-public interface EventServiceAdmin {
+public interface AdminEventService {
 
     /**
      * Получить события

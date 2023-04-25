@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.user.UserDto;
 import ru.practicum.mainService.dto.user.UserMapper;
 import ru.practicum.mainService.model.User;
-import ru.practicum.mainService.service.admins.UserServiceAdmin;
+import ru.practicum.mainService.service.admins.AdminUserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -30,10 +30,10 @@ import java.util.stream.Collectors;
 
 public class AdminUserController {
 
-    private final UserServiceAdmin userService;
+    private final AdminUserService userService;
 
     @Autowired
-    public AdminUserController(UserServiceAdmin userService) {
+    public AdminUserController(AdminUserService userService) {
         this.userService = userService;
     }
 

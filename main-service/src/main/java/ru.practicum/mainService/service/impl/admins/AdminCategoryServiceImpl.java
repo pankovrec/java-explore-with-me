@@ -9,9 +9,9 @@ import ru.practicum.mainService.error.exception.DuplicateNameCategoryException;
 import ru.practicum.mainService.error.exception.NotEmptyCategoryException;
 import ru.practicum.mainService.model.Category;
 import ru.practicum.mainService.model.Event;
-import ru.practicum.mainService.repository.admins.CategoryRepositoryAdmin;
-import ru.practicum.mainService.repository.admins.EventRepositoryAdmin;
-import ru.practicum.mainService.service.admins.CategoryServiceAdmin;
+import ru.practicum.mainService.repository.admins.AdminCategoryRepository;
+import ru.practicum.mainService.repository.admins.AdminEventRepository;
+import ru.practicum.mainService.service.admins.AdminCategoryService;
 
 import java.util.List;
 
@@ -20,14 +20,14 @@ import java.util.List;
  */
 
 @Service
-public class AdminCategoryServiceImpl implements CategoryServiceAdmin {
+public class AdminCategoryServiceImpl implements AdminCategoryService {
 
-    private final CategoryRepositoryAdmin repository;
+    private final AdminCategoryRepository repository;
 
-    private final EventRepositoryAdmin eventRepository;
+    private final AdminEventRepository eventRepository;
 
     @Autowired
-    public AdminCategoryServiceImpl(CategoryRepositoryAdmin repository, EventRepositoryAdmin eventRepository) {
+    public AdminCategoryServiceImpl(AdminCategoryRepository repository, AdminEventRepository eventRepository) {
         this.repository = repository;
         this.eventRepository = eventRepository;
     }

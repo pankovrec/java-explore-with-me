@@ -9,6 +9,6 @@ import ru.practicum.mainService.model.Event;
 import java.util.List;
 
 @Repository
-public interface EventRepositoryPublic extends JpaRepository<Event, Long> {
+public interface PublicEventRepository extends JpaRepository<Event, Long> {
     List<Event> findAll(Specification<Event> specification, Pageable pageable);
 }

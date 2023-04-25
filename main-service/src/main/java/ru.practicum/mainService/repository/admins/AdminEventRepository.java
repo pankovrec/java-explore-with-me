@@ -8,7 +8,7 @@ import ru.practicum.mainService.model.Event;
 import java.util.List;
 
 @Repository
-public interface EventRepositoryAdmin extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
+public interface AdminEventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
     List<Event> findAllByCategoryId(Long categoryId);
 
     List<Event> findAllByIdIn(List<Long> ids);

@@ -7,7 +7,7 @@ import ru.practicum.mainService.model.Request;
 import java.util.List;
 
 @Repository
-public interface RequestRepositoryPublic extends JpaRepository<Request, Long> {
+public interface PublicRequestRepository extends JpaRepository<Request, Long> {
 
     List<Request> findAllByIdIn(List<Long> ids);
 

@@ -6,7 +6,7 @@ import ru.practicum.mainService.model.Event;
 
 import java.util.List;
 
-public interface EventRepositoryPrivate extends JpaRepository<Event, Long> {
+public interface PrivateEventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByInitiatorId(Long userId, Pageable pageable);
 

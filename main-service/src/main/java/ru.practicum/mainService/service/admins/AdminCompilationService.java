@@ -7,7 +7,7 @@ import ru.practicum.mainService.dto.compilation.UpdateCompilationRequest;
 /**
  * CompilationServiceAdmin
  */
-public interface CompilationServiceAdmin {
+public interface AdminCompilationService {
     /**
      * Опубликовать подборку
      */

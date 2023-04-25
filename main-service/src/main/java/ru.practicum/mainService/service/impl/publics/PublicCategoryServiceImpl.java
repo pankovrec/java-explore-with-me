@@ -9,7 +9,7 @@ import ru.practicum.mainService.dto.category.CategoryDto;
 import ru.practicum.mainService.dto.category.CategoryMapper;
 import ru.practicum.mainService.error.exception.NotFoundCategoryException;
 import ru.practicum.mainService.model.Category;
-import ru.practicum.mainService.repository.publics.CategoryRepositoryPublic;
+import ru.practicum.mainService.repository.publics.PublicCategoryRepository;
 import ru.practicum.mainService.service.publics.PublicCategoryService;
 
 import java.util.List;
@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 @Service
 public class PublicCategoryServiceImpl implements PublicCategoryService {
 
-    private final CategoryRepositoryPublic repository;
+    private final PublicCategoryRepository repository;
 
     @Autowired
-    public PublicCategoryServiceImpl(CategoryRepositoryPublic repository) {
+    public PublicCategoryServiceImpl(PublicCategoryRepository repository) {
         this.repository = repository;
     }
 

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.StatsClient;
 import ru.practicum.mainService.model.Event;
-import ru.practicum.mainService.service.api.EventStatsService;
+import ru.practicum.mainService.service.stats.StatsEventService;
 import ru.practicum.stats.dto.HitDto;
 import ru.practicum.stats.dto.HitDtoAnswer;
 
@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
  */
 
 @Service
-public class EventStatsServiceImpl implements EventStatsService {
+public class StatsEventServiceImpl implements StatsEventService {
 
     private final StatsClient statsClient;
 
     @Autowired
-    public EventStatsServiceImpl(StatsClient statsClient) {
+    public StatsEventServiceImpl(StatsClient statsClient) {
         this.statsClient = statsClient;
     }
 

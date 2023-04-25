@@ -13,11 +13,11 @@ import ru.practicum.mainService.model.Category;
 import ru.practicum.mainService.model.Event;
 import ru.practicum.mainService.model.State;
 import ru.practicum.mainService.model.StateAction;
-import ru.practicum.mainService.repository.admins.CategoryRepositoryAdmin;
-import ru.practicum.mainService.repository.admins.EventRepositoryAdmin;
-import ru.practicum.mainService.service.admins.EventServiceAdmin;
-import ru.practicum.mainService.service.api.EventStatsService;
+import ru.practicum.mainService.repository.admins.AdminCategoryRepository;
+import ru.practicum.mainService.repository.admins.AdminEventRepository;
+import ru.practicum.mainService.service.admins.AdminEventService;
 import ru.practicum.mainService.service.impl.EventCriteriaBuilder;
+import ru.practicum.mainService.service.stats.StatsEventService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,19 +30,19 @@ import java.util.stream.Collectors;
  */
 
 @Service
-public class AdminEventServiceImpl implements EventServiceAdmin {
+public class AdminEventServiceImpl implements AdminEventService {
 
-    private final EventRepositoryAdmin repository;
+    private final AdminEventRepository repository;
 
-    private final CategoryRepositoryAdmin categoryRepository;
+    private final AdminCategoryRepository categoryRepository;
 
-    private final EventStatsService eventStatsService;
+    private final StatsEventService statsEventService;
 
     @Autowired
-    public AdminEventServiceImpl(EventRepositoryAdmin repository, CategoryRepositoryAdmin categoryRepository, EventStatsService eventStatsService) {
+    public AdminEventServiceImpl(AdminEventRepository repository, AdminCategoryRepository categoryRepository, StatsEventService statsEventService) {
         this.repository = repository;
         this.categoryRepository = categoryRepository;
-        this.eventStatsService = eventStatsService;
+        this.statsEventService = statsEventService;
     }
 
     @Override
@@ -58,8 +58,8 @@ public class AdminEventServiceImpl implements EventServiceAdmin {
         Pageable pageRequest = PageRequest.of((from / size), size);
 
         List<Event> events = repository.findAll(filter, pageRequest).toList();
-        Map<Long, Long> stats = eventStatsService.getStats(events, false);
-        eventStatsService.postViews(stats, events);
+        Map<Long, Long> stats = statsEventService.getStats(events, false);
+        statsEventService.postViews(stats, events);
 
         return events.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
     }

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * UserServiceAdmin
  */
-public interface UserServiceAdmin {
+public interface AdminUserService {
 
     /**
      * Добавить пользователя

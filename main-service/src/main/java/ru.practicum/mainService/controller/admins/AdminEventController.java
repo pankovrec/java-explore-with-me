@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.UpdateAdminRequest;
-import ru.practicum.mainService.service.admins.EventServiceAdmin;
+import ru.practicum.mainService.service.admins.AdminEventService;
 import ru.practicum.mainService.validator.EventValidate;
 
 import javax.transaction.Transactional;
@@ -26,12 +26,12 @@ import java.util.List;
 
 public class AdminEventController {
 
-    private final EventServiceAdmin eventService;
+    private final AdminEventService eventService;
 
     private final EventValidate validator;
 
     @Autowired
-    public AdminEventController(EventServiceAdmin eventService, EventValidate validator) {
+    public AdminEventController(AdminEventService eventService, EventValidate validator) {
         this.eventService = eventService;
         this.validator = validator;
     }

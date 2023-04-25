@@ -7,8 +7,8 @@ import ru.practicum.mainService.dto.request.RequestMapper;
 import ru.practicum.mainService.error.exception.ExistRequestException;
 import ru.practicum.mainService.error.exception.RequestInvalidException;
 import ru.practicum.mainService.model.*;
-import ru.practicum.mainService.repository.privates.EventRepositoryPrivate;
-import ru.practicum.mainService.repository.privates.RequestRepositoryPrivate;
+import ru.practicum.mainService.repository.privates.PrivateEventRepository;
+import ru.practicum.mainService.repository.privates.PrivateRequestRepository;
 import ru.practicum.mainService.service.privates.PrivateRequestService;
 import ru.practicum.mainService.service.publics.PublicUserService;
 
@@ -24,15 +24,15 @@ import java.util.stream.Collectors;
 @Service
 public class PrivateRequestServiceImpl implements PrivateRequestService {
 
-    private final RequestRepositoryPrivate repository;
+    private final PrivateRequestRepository repository;
 
     private final PublicUserService userService;
 
-    private final EventRepositoryPrivate eventRepository;
+    private final PrivateEventRepository eventRepository;
 
     @Autowired
-    public PrivateRequestServiceImpl(RequestRepositoryPrivate repository, PublicUserService userService,
-                                     EventRepositoryPrivate eventRepository) {
+    public PrivateRequestServiceImpl(PrivateRequestRepository repository, PublicUserService userService,
+                                     PrivateEventRepository eventRepository) {
         this.repository = repository;
         this.userService = userService;
         this.eventRepository = eventRepository;

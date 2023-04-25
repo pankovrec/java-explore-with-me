@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.compilation.CompilationDto;
 import ru.practicum.mainService.dto.compilation.NewCompilationDto;
 import ru.practicum.mainService.dto.compilation.UpdateCompilationRequest;
-import ru.practicum.mainService.service.admins.CompilationServiceAdmin;
+import ru.practicum.mainService.service.admins.AdminCompilationService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -26,10 +26,10 @@ import javax.validation.constraints.Positive;
 
 public class AdminCompilationController {
 
-    private final CompilationServiceAdmin compilationService;
+    private final AdminCompilationService compilationService;
 
     @Autowired
-    public AdminCompilationController(CompilationServiceAdmin compilationService) {
+    public AdminCompilationController(AdminCompilationService compilationService) {
         this.compilationService = compilationService;
     }
 

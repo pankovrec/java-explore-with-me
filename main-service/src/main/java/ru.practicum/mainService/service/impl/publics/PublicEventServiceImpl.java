@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.EventMapper;
 import ru.practicum.mainService.model.Event;
-import ru.practicum.mainService.repository.publics.EventRepositoryPublic;
-import ru.practicum.mainService.service.api.EventStatsService;
+import ru.practicum.mainService.repository.publics.PublicEventRepository;
 import ru.practicum.mainService.service.impl.EventCriteriaBuilder;
 import ru.practicum.mainService.service.publics.PublicEventService;
+import ru.practicum.mainService.service.stats.StatsEventService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -26,14 +26,14 @@ import java.util.stream.Collectors;
 @Service
 public class PublicEventServiceImpl implements PublicEventService {
 
-    private final EventRepositoryPublic repository;
+    private final PublicEventRepository repository;
 
-    private final EventStatsService eventStatsService;
+    private final StatsEventService statsEventService;
 
     @Autowired
-    public PublicEventServiceImpl(EventRepositoryPublic repository, EventStatsService eventStatsService) {
+    public PublicEventServiceImpl(PublicEventRepository repository, StatsEventService statsEventService) {
         this.repository = repository;
-        this.eventStatsService = eventStatsService;
+        this.statsEventService = statsEventService;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class PublicEventServiceImpl implements PublicEventService {
                                         String rangeEnd, Boolean onlyAvailable,
                                         String sort, Integer from, Integer size, HttpServletRequest request) {
 
-        eventStatsService.postStats(request);
+        statsEventService.postStats(request);
 
         Specification<Event> filter = EventCriteriaBuilder.byText(text)
                 .and(EventCriteriaBuilder.byCategories(categories))
@@ -55,8 +55,8 @@ public class PublicEventServiceImpl implements PublicEventService {
         Pageable pageRequest = PageRequest.of((from / size), size);
 
         List<Event> events = repository.findAll(filter, pageRequest);
-        Map<Long, Long> stats = eventStatsService.getStats(events, false);
-        eventStatsService.postViews(stats, events);
+        Map<Long, Long> stats = statsEventService.getStats(events, false);
+        statsEventService.postViews(stats, events);
 
         return events.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
     }
@@ -64,11 +64,11 @@ public class PublicEventServiceImpl implements PublicEventService {
     @Override
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
 
-        eventStatsService.postStats(request);
+        statsEventService.postStats(request);
 
         Optional<Event> eventOptional = repository.findById(eventId);
         Event event = eventOptional.get();
-        Map<Long, Long> stats = eventStatsService.getStats(List.of(event), false);
+        Map<Long, Long> stats = statsEventService.getStats(List.of(event), false);
         event.setViews(stats.get(eventId));
 
         return EventMapper.toFullEventDto(event);

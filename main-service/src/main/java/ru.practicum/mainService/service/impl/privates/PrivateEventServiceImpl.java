@@ -10,12 +10,12 @@ import ru.practicum.mainService.dto.request.RequestMapper;
 import ru.practicum.mainService.error.exception.IncorrectStateEventException;
 import ru.practicum.mainService.error.exception.LimitRequestParticipantException;
 import ru.practicum.mainService.model.*;
-import ru.practicum.mainService.repository.privates.EventRepositoryPrivate;
-import ru.practicum.mainService.repository.publics.CategoryRepositoryPublic;
-import ru.practicum.mainService.repository.publics.RequestRepositoryPublic;
-import ru.practicum.mainService.service.api.EventStatsService;
+import ru.practicum.mainService.repository.privates.PrivateEventRepository;
+import ru.practicum.mainService.repository.publics.PublicCategoryRepository;
+import ru.practicum.mainService.repository.publics.PublicRequestRepository;
 import ru.practicum.mainService.service.privates.PrivateEventService;
 import ru.practicum.mainService.service.publics.PublicUserService;
+import ru.practicum.mainService.service.stats.StatsEventService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,40 +31,40 @@ import java.util.stream.Collectors;
 @Service
 public class PrivateEventServiceImpl implements PrivateEventService {
 
-    private final EventRepositoryPrivate repository;
+    private final PrivateEventRepository repository;
 
-    private final CategoryRepositoryPublic categoryRepository;
+    private final PublicCategoryRepository categoryRepository;
 
-    private final RequestRepositoryPublic requestRepository;
+    private final PublicRequestRepository requestRepository;
 
     private final PublicUserService userService;
 
-    private final EventStatsService eventStatsService;
+    private final StatsEventService statsEventService;
 
     @Autowired
-    public PrivateEventServiceImpl(EventRepositoryPrivate repository, CategoryRepositoryPublic categoryRepository,
-                                   RequestRepositoryPublic requestRepository, PublicUserService userService,
-                                   EventStatsService eventStatsService) {
+    public PrivateEventServiceImpl(PrivateEventRepository repository, PublicCategoryRepository categoryRepository,
+                                   PublicRequestRepository requestRepository, PublicUserService userService,
+                                   StatsEventService statsEventService) {
         this.repository = repository;
         this.categoryRepository = categoryRepository;
         this.requestRepository = requestRepository;
         this.userService = userService;
-        this.eventStatsService = eventStatsService;
+        this.statsEventService = statsEventService;
     }
 
     @Override
     public List<EventShortDto> getEvents(Long userId, Integer from, Integer size) {
         Pageable pageRequest = PageRequest.of((from / size), size);
         List<Event> events = repository.findAllByInitiatorId(userId, pageRequest);
-        Map<Long, Long> stats = eventStatsService.getStats(events, false);
-        eventStatsService.postViews(stats, events);
+        Map<Long, Long> stats = statsEventService.getStats(events, false);
+        statsEventService.postViews(stats, events);
         return events.stream().map(EventMapper::toShortEventDto).collect(Collectors.toList());
     }
 
     @Override
     public EventFullDto getEventByEventId(Long userId, Long eventId) {
         Event event = repository.findByIdAndInitiatorId(eventId, userId);
-        Map<Long, Long> stats = eventStatsService.getStats(List.of(event), false);
+        Map<Long, Long> stats = statsEventService.getStats(List.of(event), false);
         event.setViews(stats.get(eventId));
         return EventMapper.toFullEventDto(event);
     }
@@ -113,7 +113,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             }
 
         Event updatedEvent = repository.save(event);
-        Map<Long, Long> stats = eventStatsService.getStats(List.of(updatedEvent), false);
+        Map<Long, Long> stats = statsEventService.getStats(List.of(updatedEvent), false);
         updatedEvent.setViews(stats.get(eventId));
 
         return EventMapper.toFullEventDto(updatedEvent);
@@ -151,13 +151,13 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             request.setStatus(newStatus);
 
             if (newStatus == Status.CONFIRMED) {
-                confirmedRequests.add(RequestStatusUpdateResult.ParticipationRequestDto.requestToParticipationRequestDto(request));
+                confirmedRequests.add(RequestStatusUpdateResult.ParticipationRequestDto.toParticipationRequestDto(request));
                 confirmed++;
                 event.setConfirmedRequests(confirmed);
                 limit++;
             }
             if (newStatus == Status.REJECTED)
-                rejectedRequests.add(RequestStatusUpdateResult.ParticipationRequestDto.requestToParticipationRequestDto(request));
+                rejectedRequests.add(RequestStatusUpdateResult.ParticipationRequestDto.toParticipationRequestDto(request));
         }
 
         requestRepository.saveAll(requests);

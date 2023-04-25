@@ -7,6 +7,6 @@ import ru.practicum.mainService.model.Category;
 import java.util.List;
 
 @Repository
-public interface CategoryRepositoryAdmin extends JpaRepository<Category, Long> {
+public interface AdminCategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findAllByName(String name);
 }

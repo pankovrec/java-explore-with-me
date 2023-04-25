@@ -6,8 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainService.error.exception.ExistUserException;
 import ru.practicum.mainService.model.User;
-import ru.practicum.mainService.repository.admins.UserRepositoryAdmin;
-import ru.practicum.mainService.service.admins.UserServiceAdmin;
+import ru.practicum.mainService.repository.admins.AdminUserRepository;
+import ru.practicum.mainService.service.admins.AdminUserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +17,12 @@ import java.util.Optional;
  */
 
 @Service
-public class AdminUserServiceImpl implements UserServiceAdmin {
+public class AdminUserServiceImpl implements AdminUserService {
 
-    private final UserRepositoryAdmin repository;
+    private final AdminUserRepository repository;
 
     @Autowired
-    public AdminUserServiceImpl(UserRepositoryAdmin repository) {
+    public AdminUserServiceImpl(AdminUserRepository repository) {
         this.repository = repository;
     }
 

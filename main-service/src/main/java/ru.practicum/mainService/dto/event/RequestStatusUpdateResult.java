@@ -32,7 +32,7 @@ public class RequestStatusUpdateResult {
         private Long requester;
         private String status;
 
-        public static ParticipationRequestDto requestToParticipationRequestDto(Request request) {
+        public static ParticipationRequestDto toParticipationRequestDto(Request request) {
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
             ParticipationRequestDto dto = new ParticipationRequestDto();

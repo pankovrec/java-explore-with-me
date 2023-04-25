@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.mainService.dto.compilation.CompilationDto;
 import ru.practicum.mainService.dto.compilation.CompilationMapper;
 import ru.practicum.mainService.model.Compilation;
-import ru.practicum.mainService.repository.publics.CompilationRepositoryPublic;
+import ru.practicum.mainService.repository.publics.PublicCompilationRepository;
 import ru.practicum.mainService.service.publics.PublicCompilationService;
 
 import java.util.List;
@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 @Service
 public class PublicCompilationServiceImpl implements PublicCompilationService {
 
-    private final CompilationRepositoryPublic repository;
+    private final PublicCompilationRepository repository;
 
     @Autowired
-    public PublicCompilationServiceImpl(CompilationRepositoryPublic repository) {
+    public PublicCompilationServiceImpl(PublicCompilationRepository repository) {
         this.repository = repository;
     }
 

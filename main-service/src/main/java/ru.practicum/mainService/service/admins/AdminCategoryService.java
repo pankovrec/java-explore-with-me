@@ -6,7 +6,7 @@ import ru.practicum.mainService.dto.category.NewCategoryDto;
 /**
  * CategoryServiceAdmin
  */
-public interface CategoryServiceAdmin {
+public interface AdminCategoryService {
     /**
      * Публикация категории
      */

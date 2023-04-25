@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.category.CategoryDto;
 import ru.practicum.mainService.dto.category.NewCategoryDto;
-import ru.practicum.mainService.service.admins.CategoryServiceAdmin;
+import ru.practicum.mainService.service.admins.AdminCategoryService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -25,10 +25,10 @@ import javax.validation.constraints.Positive;
 
 public class AdminCategoryController {
 
-    private final CategoryServiceAdmin categoryService;
+    private final AdminCategoryService categoryService;
 
     @Autowired
-    public AdminCategoryController(CategoryServiceAdmin categoryService) {
+    public AdminCategoryController(AdminCategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
