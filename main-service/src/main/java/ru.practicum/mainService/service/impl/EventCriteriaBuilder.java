@@ -1,4 +1,4 @@
-package ru.practicum.mainService.dto.event;
+package ru.practicum.mainService.service.impl;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.practicum.mainService.model.Event;
@@ -11,10 +11,10 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
- * EventSpecifications
+ * EventCriteriaFilterBuilder
  */
 
-public class EventSpecifications {
+public class EventCriteriaBuilder {
 
     public static Specification<Event> byUsers(List<Long> users) {
         return (root, query, cb) -> users == null ? null : cb.in(root.get("initiator").get("id")).value(users);
