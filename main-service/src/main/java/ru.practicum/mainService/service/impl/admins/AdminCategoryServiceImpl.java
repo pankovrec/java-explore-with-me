@@ -35,11 +35,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     @Override
     public CategoryDto postCategory(NewCategoryDto newCategoryDto) {
         List<Category> check = repository.findAllByName(newCategoryDto.getName());
-
-        if (!check.isEmpty()) {
-            throw new DuplicateNameCategoryException("имя категории должно быть уникальным: "
-                    + newCategoryDto.getName());
-        }
+        checkDuplicateName(newCategoryDto, check);
         Category category = new Category();
         category.setName(newCategoryDto.getName());
         Category prePostedCategory = repository.save(category);
@@ -49,11 +45,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     @Override
     public CategoryDto patchCategory(Long catId, CategoryDto categoryDto) {
         List<Category> check = repository.findAllByName(categoryDto.getName());
-        if (!check.isEmpty()) {
-            throw new DuplicateNameCategoryException("имя категории должно быть уникальным" +
-                    categoryDto.getName());
-        }
-
+        checkDuplicateName(categoryDto, check);
         Category category = CategoryMapper.fromCategoryDto(categoryDto);
         repository.save(category);
         return CategoryMapper.toCategoryDto(category);
@@ -62,9 +54,27 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     @Override
     public void deleteCategory(Long catId) {
         List<Event> check = eventRepository.findAllByCategoryId(catId);
+        checkEmptyCategory(check);
+        repository.deleteById(catId);
+    }
+
+    private static void checkEmptyCategory(List<Event> check) {
         if (!check.isEmpty()) {
             throw new NotEmptyCategoryException("с категорией не должно быть связано ни одного события.");
         }
-        repository.deleteById(catId);
+    }
+
+    private static void checkDuplicateName(NewCategoryDto newCategoryDto, List<Category> check) {
+        if (!check.isEmpty()) {
+            throw new DuplicateNameCategoryException("имя категории должно быть уникальным: "
+                    + newCategoryDto.getName());
+        }
+    }
+
+    private static void checkDuplicateName(CategoryDto newCategoryDto, List<Category> check) {
+        if (!check.isEmpty()) {
+            throw new DuplicateNameCategoryException("имя категории должно быть уникальным: "
+                    + newCategoryDto.getName());
+        }
     }
 }

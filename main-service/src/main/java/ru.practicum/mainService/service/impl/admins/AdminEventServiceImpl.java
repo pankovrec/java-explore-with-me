@@ -69,17 +69,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         Optional<Event> eventOptional = repository.findById(eventId);
 
         Event event = eventOptional.get();
-        if ((updateAdminRequest.getStateAction() == StateAction.PUBLISH_EVENT)
-                && event.getState() != State.PENDING) {
-            throw new IncorrectStateEventAdminException("Нельзя обновлять событие с таким статусом: "
-                    + event.getState());
-        }
-
-        if (updateAdminRequest.getStateAction() == StateAction.REJECT_EVENT
-                && event.getState() == State.PUBLISHED) {
-            throw new IncorrectStateEventAdminException("Нельзя обновлять событие с таким статусом: "
-                    + event.getState());
-        }
+        checkStatus(updateAdminRequest, event);
 
         if (updateAdminRequest.getAnnotation() != null)
             event.setAnnotation(updateAdminRequest.getAnnotation());
@@ -117,5 +107,19 @@ public class AdminEventServiceImpl implements AdminEventService {
         Event prePatchedEvent = repository.save(event);
 
         return EventMapper.toFullEventDto(prePatchedEvent);
+    }
+
+    private static void checkStatus(UpdateAdminRequest updateAdminRequest, Event event) {
+        if ((updateAdminRequest.getStateAction() == StateAction.PUBLISH_EVENT)
+                && event.getState() != State.PENDING) {
+            throw new IncorrectStateEventAdminException("Нельзя обновлять событие с таким статусом: "
+                    + event.getState());
+        }
+
+        if (updateAdminRequest.getStateAction() == StateAction.REJECT_EVENT
+                && event.getState() == State.PUBLISHED) {
+            throw new IncorrectStateEventAdminException("Нельзя обновлять событие с таким статусом: "
+                    + event.getState());
+        }
     }
 }
