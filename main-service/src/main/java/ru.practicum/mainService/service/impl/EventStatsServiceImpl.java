@@ -71,11 +71,11 @@ public class EventStatsServiceImpl implements EventStatsService {
 
     @Override
     public void postStats(HttpServletRequest request) {
-        HitDto hitDto = makeHitDto(request);
+        HitDto hitDto = createDto(request);
         statsClient.sendHit(hitDto);
     }
 
-    public void setViews(Map<Long, Long> views, List<Event> events) {
+    public void postViews(Map<Long, Long> views, List<Event> events) {
         for (Event event : events) {
             Long view = views.get(event.getId());
             if (view == null) {
@@ -85,7 +85,7 @@ public class EventStatsServiceImpl implements EventStatsService {
         }
     }
 
-    private HitDto makeHitDto(HttpServletRequest request) {
+    private HitDto createDto(HttpServletRequest request) {
         HitDto hitDto = new HitDto();
         hitDto.setIp(request.getRemoteAddr());
         hitDto.setUri(request.getRequestURI());

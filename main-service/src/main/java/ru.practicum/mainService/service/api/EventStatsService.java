@@ -24,5 +24,5 @@ public interface EventStatsService {
     /**
      * добавить просмотры
      */
-    void setViews(Map<Long, Long> views, List<Event> events);
+    void postViews(Map<Long, Long> views, List<Event> events);
 }

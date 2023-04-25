@@ -1,7 +1,7 @@
 package ru.practicum.mainService.service.admins;
 
 import ru.practicum.mainService.dto.event.EventFullDto;
-import ru.practicum.mainService.dto.event.UpdateEventAdminRequest;
+import ru.practicum.mainService.dto.event.UpdateAdminRequest;
 
 import java.util.List;
 
@@ -19,5 +19,5 @@ public interface EventServiceAdmin {
     /**
      * Обновить событие
      */
-    EventFullDto patchEvent(Long eventId, UpdateEventAdminRequest updateEventAdminRequest);
+    EventFullDto patchEvent(Long eventId, UpdateAdminRequest updateAdminRequest);
 }
