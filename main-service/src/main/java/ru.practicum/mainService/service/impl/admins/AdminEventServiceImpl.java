@@ -1,26 +1,24 @@
 package ru.practicum.mainService.service.impl.admins;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.EventMapper;
 import ru.practicum.mainService.dto.event.UpdateAdminRequest;
 import ru.practicum.mainService.error.exception.IncorrectStateEventAdminException;
-import ru.practicum.mainService.model.Category;
-import ru.practicum.mainService.model.Event;
-import ru.practicum.mainService.model.State;
-import ru.practicum.mainService.model.StateAction;
+import ru.practicum.mainService.model.*;
 import ru.practicum.mainService.repository.admins.AdminCategoryRepository;
 import ru.practicum.mainService.repository.admins.AdminEventRepository;
 import ru.practicum.mainService.service.admins.AdminEventService;
-import ru.practicum.mainService.service.impl.EventCriteriaBuilder;
 import ru.practicum.mainService.service.stats.StatsEventService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,19 +47,28 @@ public class AdminEventServiceImpl implements AdminEventService {
     public List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, String rangeStart,
                                         String rangeEnd, Integer from, Integer size) {
 
-        Specification<Event> filter = EventCriteriaBuilder.byUsers(users)
-                .and(EventCriteriaBuilder.byStates(states))
-                .and(EventCriteriaBuilder.byCategories(categories))
-                .and(EventCriteriaBuilder.byStart(rangeStart))
-                .and(EventCriteriaBuilder.byEnd(rangeEnd));
-
+        List<Event> filteredEvents;
+        QEvent qEvent = QEvent.event;
+        BooleanExpression filter = qEvent.isNotNull();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
+        if (!users.isEmpty()) {
+            filter = filter.and(qEvent.initiator.id.in(users));
+        }
+        if (states != null) {
+            filter = filter.and(qEvent.state.in(states.stream().map(
+                    State::valueOf).collect(Collectors.toList())));
+        }
+        if (categories != null) {
+            filter = filter.and(qEvent.category.id.in(categories));
+        }
+        if (rangeEnd != null && rangeStart != null) {
+            filter = filter.and(qEvent.eventDate.between(LocalDateTime.parse(rangeStart, formatter), LocalDateTime.parse(rangeEnd, formatter)));
+        }
         Pageable pageRequest = PageRequest.of((from / size), size);
-
-        List<Event> events = repository.findAll(filter, pageRequest).toList();
-        Map<Long, Long> stats = statsEventService.getStats(events, false);
-        statsEventService.postViews(stats, events);
-
-        return events.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
+        filteredEvents = repository.findAll(filter, pageRequest).toList();
+        Map<Long, Long> stats = statsEventService.getStats(filteredEvents, false);
+        statsEventService.postViews(stats, filteredEvents);
+        return filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
     }
 
     @Override
