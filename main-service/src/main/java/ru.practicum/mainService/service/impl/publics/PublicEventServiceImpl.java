@@ -51,10 +51,9 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .and(EventCriteriaBuilder.byEnd(rangeEnd))
                 .and(EventCriteriaBuilder.byAvailable(onlyAvailable));
 
+        Pageable page = PageRequest.of((from / size), size);
 
-        Pageable pageRequest = PageRequest.of((from / size), size);
-
-        List<Event> events = repository.findAll(filter, pageRequest);
+        List<Event> events = repository.findAll(filter, page);
         Map<Long, Long> stats = statsEventService.getStats(events, false);
         statsEventService.postViews(stats, events);
 
