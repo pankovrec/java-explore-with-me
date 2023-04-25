@@ -7,10 +7,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.EventMapper;
-import ru.practicum.mainService.dto.event.EventSpecifications;
 import ru.practicum.mainService.model.Event;
 import ru.practicum.mainService.repository.publics.EventRepositoryPublic;
 import ru.practicum.mainService.service.api.EventStatsService;
+import ru.practicum.mainService.service.impl.EventCriteriaBuilder;
 import ru.practicum.mainService.service.publics.EventServicePublic;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,15 +44,15 @@ public class EventServicePublicImpl implements EventServicePublic {
 
         eventStatsService.postStats(request);
 
-        Specification<Event> spec = EventSpecifications.byText(text)
-                .and(EventSpecifications.byCategories(categories))
-                .and(EventSpecifications.byPaid(paid))
-                .and(EventSpecifications.byStart(rangeStart))
-                .and(EventSpecifications.byEnd(rangeEnd))
-                .and(EventSpecifications.byAvailable(onlyAvailable));
+        Specification<Event> filter = EventCriteriaBuilder.byText(text)
+                .and(EventCriteriaBuilder.byCategories(categories))
+                .and(EventCriteriaBuilder.byPaid(paid))
+                .and(EventCriteriaBuilder.byStart(rangeStart))
+                .and(EventCriteriaBuilder.byEnd(rangeEnd))
+                .and(EventCriteriaBuilder.byAvailable(onlyAvailable));
         Pageable pageRequest = PageRequest.of((from / size), size);
 
-        List<Event> events = repository.findAll(spec, pageRequest);
+        List<Event> events = repository.findAll(filter, pageRequest);
         Map<Long, Long> stats = eventStatsService.getStats(events, false);
         eventStatsService.setViews(stats, events);
 
