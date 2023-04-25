@@ -7,4 +7,5 @@ import ru.practicum.mainService.model.Event;
 
 @Repository
 public interface PublicEventRepository extends JpaRepository<Event, Long>, QuerydslPredicateExecutor<Event> {
+
 }

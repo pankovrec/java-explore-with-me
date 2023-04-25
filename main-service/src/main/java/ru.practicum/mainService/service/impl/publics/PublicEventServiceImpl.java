@@ -68,6 +68,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         filteredEvents = repository.findAll(filter, pageRequest).toList();
         Map<Long, Long> stats = statsEventService.getStats(filteredEvents, false);
         statsEventService.postViews(stats, filteredEvents);
+
         return filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
     }
 

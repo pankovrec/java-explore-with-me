@@ -108,6 +108,7 @@ public class AdminEventServiceImpl implements AdminEventService {
                 event.setState(State.CANCELED);
             }
         }
+
         if (updateAdminRequest.getTitle() != null)
             event.setTitle(updateAdminRequest.getTitle());
 
