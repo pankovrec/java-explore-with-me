@@ -12,6 +12,4 @@ public interface UserRepositoryAdmin extends JpaRepository<User, Long> {
 
     User findByName(String name);
 
-    User findByEmail(String email);
-
 }
