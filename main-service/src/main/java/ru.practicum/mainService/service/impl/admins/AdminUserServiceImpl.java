@@ -28,8 +28,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public User postUser(User user) {
-        User foundedUser = repository.findByName(user.getName());
-        if (foundedUser != null) {
+        User check = repository.findByName(user.getName());
+        if (check != null) {
             throw new ExistUserException("Имя должно быть уникально " + user.getName());
         }
         return repository.save(user);
@@ -49,7 +49,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public void delete(Long id) {
-        Optional<User> user = repository.findById(id);
+        Optional<User> check = repository.findById(id);
         repository.deleteById(id);
     }
 }

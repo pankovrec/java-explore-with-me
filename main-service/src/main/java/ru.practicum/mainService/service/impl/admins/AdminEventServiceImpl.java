@@ -114,8 +114,8 @@ public class AdminEventServiceImpl implements AdminEventService {
         if (updateAdminRequest.getTitle() != null)
             event.setTitle(updateAdminRequest.getTitle());
 
-        Event updatedEvent = repository.save(event);
+        Event prePatchedEvent = repository.save(event);
 
-        return EventMapper.toFullEventDto(updatedEvent);
+        return EventMapper.toFullEventDto(prePatchedEvent);
     }
 }

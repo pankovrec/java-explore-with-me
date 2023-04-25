@@ -37,8 +37,8 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         Compilation compilation = CompilationMapper.fromCompilationDto(newCompilationDto);
         List<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
         compilation.setEvents(events);
-        Compilation newCompilation = repository.save(compilation);
-        return CompilationMapper.toCompilationDto(newCompilation);
+        Compilation prePostCompilation = repository.save(compilation);
+        return CompilationMapper.toCompilationDto(prePostCompilation);
     }
 
     @Override
@@ -55,9 +55,9 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         if (updateCompilationRequest.getPinned() != null)
             compilation.setPinned(updateCompilationRequest.getPinned());
 
-        Compilation updatedCompilation = repository.save(compilation);
+        Compilation prePatchedCompilation = repository.save(compilation);
 
-        return CompilationMapper.toCompilationDto(updatedCompilation);
+        return CompilationMapper.toCompilationDto(prePatchedCompilation);
     }
 
     @Override

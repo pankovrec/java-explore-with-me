@@ -34,21 +34,22 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Override
     public CategoryDto postCategory(NewCategoryDto newCategoryDto) {
-        List<Category> allByName = repository.findAllByName(newCategoryDto.getName());
-        if (!allByName.isEmpty()) {
+        List<Category> check = repository.findAllByName(newCategoryDto.getName());
+
+        if (!check.isEmpty()) {
             throw new DuplicateNameCategoryException("имя категории должно быть уникальным: "
                     + newCategoryDto.getName());
         }
         Category category = new Category();
         category.setName(newCategoryDto.getName());
-        Category savedCategory = repository.save(category);
-        return CategoryMapper.toCategoryDto(savedCategory);
+        Category prePostedCategory = repository.save(category);
+        return CategoryMapper.toCategoryDto(prePostedCategory);
     }
 
     @Override
     public CategoryDto patchCategory(Long catId, CategoryDto categoryDto) {
-        List<Category> allByName = repository.findAllByName(categoryDto.getName());
-        if (!allByName.isEmpty()) {
+        List<Category> check = repository.findAllByName(categoryDto.getName());
+        if (!check.isEmpty()) {
             throw new DuplicateNameCategoryException("имя категории должно быть уникальным" +
                     categoryDto.getName());
         }
@@ -60,8 +61,8 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Override
     public void deleteCategory(Long catId) {
-        List<Event> events = eventRepository.findAllByCategoryId(catId);
-        if (!events.isEmpty()) {
+        List<Event> check = eventRepository.findAllByCategoryId(catId);
+        if (!check.isEmpty()) {
             throw new NotEmptyCategoryException("с категорией не должно быть связано ни одного события.");
         }
         repository.deleteById(catId);

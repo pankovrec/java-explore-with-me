@@ -53,9 +53,9 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
 
         User user = userService.getUser(userId);
 
-        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        Optional<Event> optional = eventRepository.findById(eventId);
 
-        Event event = eventOptional.get();
+        Event event = optional.get();
         if (event.getInitiator().getId().equals(userId)) {
             throw new RequestInvalidException("User cant request to his own event");
         }
