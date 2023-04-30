@@ -9,7 +9,6 @@ import ru.practicum.mainService.model.Category;
 import ru.practicum.mainService.model.User;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
