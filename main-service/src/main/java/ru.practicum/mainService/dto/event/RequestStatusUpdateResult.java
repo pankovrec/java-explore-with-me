@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.mainService.model.Request;
 
+import javax.validation.constraints.NotNull;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -28,8 +29,10 @@ public class RequestStatusUpdateResult {
 
         private Long id;
         private String created;
+        @NotNull
         private Long event;
         private Long requester;
+        @NotNull
         private String status;
 
         public static ParticipationRequestDto toParticipationRequestDto(Request request) {

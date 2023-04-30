@@ -8,6 +8,8 @@ import ru.practicum.mainService.model.Category;
 import ru.practicum.mainService.model.Event;
 import ru.practicum.mainService.model.User;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class CompilationDto {
     private Long id;
     private List<EventShortDto> events;
     private Boolean pinned;
+    @NotBlank
     private String title;
 
     @NoArgsConstructor
@@ -33,12 +36,16 @@ public class CompilationDto {
     public static class EventShortDto {
 
         private Long id;
+        @NotBlank
         private String annotation;
+        @NotNull
         private CategoryDto category;
         private Long confirmedRequests;
+        @NotNull
         private LocalDateTime eventDate;
         private UserShortDto initiator;
         private Boolean paid;
+        @NotNull
         private String title;
         private Long views;
 
@@ -48,25 +55,26 @@ public class CompilationDto {
         @Getter
         public static class CategoryDto {
             private Long id;
+            @NotNull
             private String name;
 
-            public static CategoryDto categoryToCategoryDto(Category entity) {
-                return new CategoryDto(entity.getId(),
-                        entity.getName());
+            public static CategoryDto categoryToCategoryDto(Category category) {
+                return new CategoryDto(category.getId(),
+                        category.getName());
             }
         }
 
-        public static EventShortDto eventToEventShortDto(Event entity) {
+        public static EventShortDto eventToEventShortDto(Event event) {
             EventShortDto dto = new EventShortDto();
-            dto.setId(entity.getId());
-            dto.setAnnotation(entity.getAnnotation());
-            dto.setCategory(CategoryDto.categoryToCategoryDto(entity.getCategory()));
-            dto.setConfirmedRequests(entity.getConfirmedRequests());
-            dto.setEventDate(entity.getEventDate());
-            dto.setInitiator(UserShortDto.entityToUserShortDto(entity.getInitiator()));
-            dto.setPaid(entity.getPaid());
-            dto.setTitle(entity.getTitle());
-            dto.setViews(entity.getViews());
+            dto.setId(event.getId());
+            dto.setAnnotation(event.getAnnotation());
+            dto.setCategory(CategoryDto.categoryToCategoryDto(event.getCategory()));
+            dto.setConfirmedRequests(event.getConfirmedRequests());
+            dto.setEventDate(event.getEventDate());
+            dto.setInitiator(UserShortDto.entityToUserShortDto(event.getInitiator()));
+            dto.setPaid(event.getPaid());
+            dto.setTitle(event.getTitle());
+            dto.setViews(event.getViews());
             return dto;
         }
 
@@ -76,12 +84,13 @@ public class CompilationDto {
         @Getter
         public static class UserShortDto {
             private Long id;
+            @NotBlank
             private String name;
 
-            public static UserShortDto entityToUserShortDto(User entity) {
+            public static UserShortDto entityToUserShortDto(User user) {
                 UserShortDto dto = new UserShortDto();
-                dto.setId(entity.getId());
-                dto.setName(entity.getName());
+                dto.setId(user.getId());
+                dto.setName(user.getName());
                 return dto;
             }
         }

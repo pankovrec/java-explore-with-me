@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.mainService.model.StateAction;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * UpdateEventUserRequest
  */
@@ -16,5 +18,6 @@ import ru.practicum.mainService.model.StateAction;
 @AllArgsConstructor
 public class UpdateUserRequest {
     private String eventDate;
+    @NotNull
     private StateAction stateAction;
 }

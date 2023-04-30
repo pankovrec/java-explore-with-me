@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.mainService.model.Status;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -16,5 +17,6 @@ import java.util.List;
 @Getter
 public class RequestStatusUpdateRequest {
     List<Long> requestIds;
+    @NotNull
     private Status status;
 }

@@ -1,6 +1,5 @@
 package ru.practicum.mainService.service.impl.admins;
 
-
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -18,10 +17,7 @@ import ru.practicum.mainService.service.stats.StatsEventService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +44,6 @@ public class AdminEventServiceImpl implements AdminEventService {
     public List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, String rangeStart,
                                         String rangeEnd, Integer from, Integer size) {
 
-        List<Event> filteredEvents;
         QEvent qEvent = QEvent.event;
         BooleanExpression filter = qEvent.isNotNull();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
@@ -66,7 +61,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             filter = filter.and(qEvent.eventDate.between(LocalDateTime.parse(rangeStart, formatter), LocalDateTime.parse(rangeEnd, formatter)));
         }
         Pageable pageRequest = PageRequest.of((from / size), size);
-        filteredEvents = repository.findAll(filter, pageRequest).toList();
+        List<Event> filteredEvents = repository.findAll(filter, pageRequest).toList();
         List<EventFullDto> listOfEvents = filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
         Map<Long, Long> stats = statsEventService.getStats(listOfEvents, false);
         statsEventService.postViews(stats, listOfEvents);
@@ -75,16 +70,14 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto patchEvent(Long eventId, UpdateAdminRequest updateAdminRequest) {
-        Optional<Event> eventOptional = repository.findById(eventId);
 
-        Event event = eventOptional.get();
+        Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
         checkStatus(updateAdminRequest, event);
 
         if (updateAdminRequest.getAnnotation() != null)
             event.setAnnotation(updateAdminRequest.getAnnotation());
         if (updateAdminRequest.getCategory() != null) {
-            Optional<Category> category = categoryRepository.findById(updateAdminRequest.getCategory());
-            event.setCategory(category.get());
+            event.setCategory(categoryRepository.findById(updateAdminRequest.getCategory()).orElseThrow());
         }
         if (updateAdminRequest.getDescription() != null)
             event.setDescription(updateAdminRequest.getDescription());
@@ -114,9 +107,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         if (updateAdminRequest.getTitle() != null)
             event.setTitle(updateAdminRequest.getTitle());
 
-        Event prePatchedEvent = repository.save(event);
-
-        return EventMapper.toFullEventDto(prePatchedEvent);
+        return EventMapper.toFullEventDto(repository.save(event));
     }
 
     private static void checkStatus(UpdateAdminRequest updateAdminRequest, Event event) {

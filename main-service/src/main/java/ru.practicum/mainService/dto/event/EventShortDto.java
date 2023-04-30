@@ -8,6 +8,8 @@ import lombok.Setter;
 import ru.practicum.mainService.model.Category;
 import ru.practicum.mainService.model.User;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -37,11 +39,12 @@ public class EventShortDto {
     @Getter
     public static class CategoryDto {
         private Long id;
+        @NotBlank
         private String name;
 
-        public static CategoryDto categoryToCategoryDto(Category entity) {
-            return new CategoryDto(entity.getId(),
-                    entity.getName());
+        public static CategoryDto categoryToCategoryDto(Category category) {
+            return new CategoryDto(category.getId(),
+                    category.getName());
         }
     }
 
@@ -51,13 +54,14 @@ public class EventShortDto {
     @Getter
     public static class UserShortDto {
         private Long id;
+        @NotBlank
         private String name;
 
-        public static UserShortDto userToUserShortDto(User entity) {
-            UserShortDto dto = new UserShortDto();
-            dto.setId(entity.getId());
-            dto.setName(entity.getName());
-            return dto;
+        public static UserShortDto userToUserShortDto(User user) {
+            UserShortDto userShortDto = new UserShortDto();
+            userShortDto.setId(user.getId());
+            userShortDto.setName(user.getName());
+            return userShortDto;
         }
     }
 }

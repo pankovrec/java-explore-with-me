@@ -18,10 +18,7 @@ import ru.practicum.mainService.service.publics.PublicUserService;
 import ru.practicum.mainService.service.stats.StatsEventService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -56,9 +53,9 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     public List<EventShortDto> getEvents(Long userId, Integer from, Integer size) {
         Pageable pageRequest = PageRequest.of((from / size), size);
         List<Event> events = repository.findAllByInitiatorId(userId, pageRequest);
-        List<EventFullDto> listOfEventsForStats = events.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
-        Map<Long, Long> stats = statsEventService.getStats(listOfEventsForStats, false);
-        statsEventService.postViews(stats, listOfEventsForStats);
+        List<EventFullDto> listOfEvents = events.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
+        Map<Long, Long> stats = statsEventService.getStats(listOfEvents, false);
+        statsEventService.postViews(stats, listOfEvents);
         return events.stream().map(EventMapper::toShortEventDto).collect(Collectors.toList());
     }
 
@@ -72,34 +69,26 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     @Override
     public List<ParticipationRequestDto> getEventParticipants(Long userId, Long eventId) {
-
-        List<Request> requests = requestRepository.findAllByEventId(eventId);
-        return requests.stream().map(RequestMapper::toRequestDto).collect(Collectors.toList());
+        return requestRepository.findAllByEventId(eventId).stream().map(RequestMapper::toRequestDto).collect(Collectors.toList());
     }
 
     @Override
     public EventFullDto postEvent(Long userId, NewEventDto eventDto) {
-        Optional<Category> category = categoryRepository.findById(eventDto.getCategory());
-
-        User user = userService.getUser(userId);
 
         Event event = EventMapper.fromEventDto(eventDto);
         event.setState(State.PENDING);
-        event.setCategory(category.get());
-        event.setInitiator(user);
+        event.setCategory(categoryRepository.findById(eventDto.getCategory()).orElseThrow(NoSuchElementException::new));
+        event.setInitiator(userService.getUser(userId));
         event.setCreatedOn(LocalDateTime.now());
         event.setConfirmedRequests(0L);
-        Event newEvent = repository.save(event);
-        newEvent.setViews(0L);
 
-        return EventMapper.toFullEventDto(newEvent);
+        return EventMapper.toFullEventDto(repository.save(event));
     }
 
     @Override
     public EventFullDto patchUserEventById(Long userId, Long eventId, UpdateUserRequest eventDto) {
 
-        Optional<Event> eventOptional = repository.findById(eventId);
-        Event event = eventOptional.get();
+        Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
         checkStatus(eventDto, event);
         Event updatedEvent = repository.save(event);
         Map<Long, Long> stats = statsEventService.getStats(List.of(EventMapper.toFullEventDto(updatedEvent)), false);
@@ -113,16 +102,14 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                                                          Long eventId,
                                                          RequestStatusUpdateRequest requestStatusUpdateRequest) {
 
-        RequestStatusUpdateResult result = new RequestStatusUpdateResult();
         List<RequestStatusUpdateResult.ParticipationRequestDto> confirmedRequests = new ArrayList<>();
         List<RequestStatusUpdateResult.ParticipationRequestDto> rejectedRequests = new ArrayList<>();
 
         Status newStatus = requestStatusUpdateRequest.getStatus();
 
         userService.getUser(userId);
-        Optional<Event> eventOptional = repository.findById(eventId);
 
-        Event event = eventOptional.get();
+        Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
 
         Integer limit = event.getParticipantLimit();
         Long confirmed = event.getConfirmedRequests();
@@ -132,8 +119,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             throw new LimitRequestParticipantException("Лимит участников исчерпан.");
         }
 
-        List<Request> requests = requestRepository
-                .findAllByIdIn(requestStatusUpdateRequest.getRequestIds());
+        List<Request> requests = requestRepository.findAllByIdIn(requestStatusUpdateRequest.getRequestIds());
 
         for (Request request : requests) {
 
@@ -151,6 +137,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         requestRepository.saveAll(requests);
 
+        RequestStatusUpdateResult result = new RequestStatusUpdateResult();
         result.setConfirmedRequests(confirmedRequests);
         result.setRejectedRequests(rejectedRequests);
         return result;

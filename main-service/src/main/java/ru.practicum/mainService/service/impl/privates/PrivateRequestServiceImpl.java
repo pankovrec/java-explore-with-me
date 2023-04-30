@@ -14,7 +14,7 @@ import ru.practicum.mainService.service.publics.PublicUserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -53,9 +53,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
 
         User user = userService.getUser(userId);
 
-        Optional<Event> optional = eventRepository.findById(eventId);
-
-        Event event = optional.get();
+        Event event = eventRepository.findById(eventId).orElseThrow(NoSuchElementException::new);
         check(userId, eventId, event);
 
         Request request = new Request();
@@ -73,21 +71,16 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
             eventRepository.save(event);
         }
 
-        Request newRequest = repository.save(request);
-
-        return RequestMapper.toRequestDto(newRequest);
+        return RequestMapper.toRequestDto(repository.save(request));
     }
 
     @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         userService.getUser(userId);
-
-        Optional<Request> requestOptional = repository.findById(requestId);
-        Request request = requestOptional.get();
+        Request request = repository.findById(requestId).orElseThrow(NoSuchElementException::new);
         request.setStatus(Status.CANCELED);
-        Request updatedRequest = repository.save(request);
 
-        return RequestMapper.toRequestDto(updatedRequest);
+        return RequestMapper.toRequestDto(repository.save(request));
     }
 
     private void check(Long userId, Long eventId, Event event) {

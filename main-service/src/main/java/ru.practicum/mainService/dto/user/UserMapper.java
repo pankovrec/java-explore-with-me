@@ -7,17 +7,17 @@ import ru.practicum.mainService.model.User;
  */
 
 public class UserMapper {
-    public static User fromUserDto(UserDto dto) {
+    public static User fromUserDto(UserDto userDto) {
         return new User()
-                .setName(dto.getName())
-                .setEmail(dto.getEmail());
+                .setName(userDto.getName())
+                .setEmail(userDto.getEmail());
     }
 
-    public static UserDto toUserDto(User entity) {
+    public static UserDto toUserDto(User user) {
         UserDto dto = new UserDto();
-        dto.setId(entity.getId());
-        dto.setName(entity.getName());
-        dto.setEmail(entity.getEmail());
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
         return dto;
     }
 }

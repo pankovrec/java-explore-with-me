@@ -6,6 +6,7 @@ import ru.practicum.mainService.model.User;
 import ru.practicum.mainService.repository.publics.PublicUserRepository;
 import ru.practicum.mainService.service.publics.PublicUserService;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
@@ -24,7 +25,6 @@ public class PublicUserServiceImpl implements PublicUserService {
 
     @Override
     public User getUser(Long userId) {
-        Optional<User> user = repository.findById(userId);
-        return user.get();
+        return repository.findById(userId).orElseThrow(NoSuchElementException::new);
     }
 }

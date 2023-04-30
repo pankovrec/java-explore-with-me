@@ -9,18 +9,18 @@ import ru.practicum.mainService.model.Location;
 
 public class EventMapper {
 
-    public static EventShortDto toShortEventDto(Event entity) {
-        EventShortDto dto = new EventShortDto();
-        dto.setId(entity.getId());
-        dto.setAnnotation(entity.getAnnotation());
-        dto.setCategory(EventShortDto.CategoryDto.categoryToCategoryDto(entity.getCategory()));
-        dto.setConfirmedRequests(entity.getConfirmedRequests());
-        dto.setEventDate(entity.getEventDate());
-        dto.setInitiator(EventShortDto.UserShortDto.userToUserShortDto(entity.getInitiator()));
-        dto.setPaid(entity.getPaid());
-        dto.setTitle(entity.getTitle());
-        dto.setViews(entity.getViews());
-        return dto;
+    public static EventShortDto toShortEventDto(Event event) {
+        EventShortDto eventShortDto = new EventShortDto();
+        eventShortDto.setId(event.getId());
+        eventShortDto.setAnnotation(event.getAnnotation());
+        eventShortDto.setCategory(EventShortDto.CategoryDto.categoryToCategoryDto(event.getCategory()));
+        eventShortDto.setConfirmedRequests(event.getConfirmedRequests());
+        eventShortDto.setEventDate(event.getEventDate());
+        eventShortDto.setInitiator(EventShortDto.UserShortDto.userToUserShortDto(event.getInitiator()));
+        eventShortDto.setPaid(event.getPaid());
+        eventShortDto.setTitle(event.getTitle());
+        eventShortDto.setViews(event.getViews());
+        return eventShortDto;
     }
 
     public static Event fromEventDto(NewEventDto dto) {
@@ -37,26 +37,26 @@ public class EventMapper {
         return event;
     }
 
-    public static EventFullDto toFullEventDto(Event entity) {
+    public static EventFullDto toFullEventDto(Event event) {
 
-        EventFullDto dto = new EventFullDto();
-        dto.setId(entity.getId());
-        dto.setAnnotation(entity.getAnnotation());
-        dto.setCategory(EventFullDto.CategoryDto.categoryToCategoryDto(entity.getCategory()));
-        dto.setConfirmedRequests(entity.getConfirmedRequests());
-        dto.setCreatedOn(entity.getCreatedOn());
-        dto.setDescription(entity.getDescription());
-        dto.setEventDate(entity.getEventDate());
-        dto.setInitiator(EventFullDto.UserShortDto.userToUserShortDto(entity.getInitiator()));
-        dto.setLocation(new Location(entity.getLat(), entity.getLon()));
-        dto.setPaid(entity.getPaid());
-        dto.setParticipantLimit(entity.getParticipantLimit());
-        if (entity.getPublishedOn() != null)
-            dto.setPublishedOn(entity.getPublishedOn());
-        dto.setRequestModeration(entity.getRequestModeration());
-        dto.setState(entity.getState());
-        dto.setTitle(entity.getTitle());
-        dto.setViews(entity.getViews());
-        return dto;
+        EventFullDto eventFullDto = new EventFullDto();
+        eventFullDto.setId(event.getId());
+        eventFullDto.setAnnotation(event.getAnnotation());
+        eventFullDto.setCategory(EventFullDto.CategoryDto.categoryToCategoryDto(event.getCategory()));
+        eventFullDto.setConfirmedRequests(event.getConfirmedRequests());
+        eventFullDto.setCreatedOn(event.getCreatedOn());
+        eventFullDto.setDescription(event.getDescription());
+        eventFullDto.setEventDate(event.getEventDate());
+        eventFullDto.setInitiator(EventFullDto.UserShortDto.userToUserShortDto(event.getInitiator()));
+        eventFullDto.setLocation(new Location(event.getLat(), event.getLon()));
+        eventFullDto.setPaid(event.getPaid());
+        eventFullDto.setParticipantLimit(event.getParticipantLimit());
+        if (event.getPublishedOn() != null)
+            eventFullDto.setPublishedOn(event.getPublishedOn());
+        eventFullDto.setRequestModeration(event.getRequestModeration());
+        eventFullDto.setState(event.getState());
+        eventFullDto.setTitle(event.getTitle());
+        eventFullDto.setViews(event.getViews());
+        return eventFullDto;
     }
 }

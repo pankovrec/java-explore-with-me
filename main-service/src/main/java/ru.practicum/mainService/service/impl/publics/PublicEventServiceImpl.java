@@ -44,7 +44,6 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         statsEventService.postStats(request);
 
-        List<Event> filteredEvents;
         QEvent qEvent = QEvent.event;
         BooleanExpression filter = qEvent.isNotNull();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
@@ -62,9 +61,10 @@ public class PublicEventServiceImpl implements PublicEventService {
             filter = filter.and(qEvent.eventDate.between(LocalDateTime.parse(rangeStart, formatter), LocalDateTime.parse(rangeEnd, formatter)));
         }
         Pageable pageRequest = PageRequest.of((from / size), size);
-        filteredEvents = repository.findAll(filter, pageRequest).toList();
+        List<Event> filteredEvents = repository.findAll(filter, pageRequest).toList();
         List<EventFullDto> listOfEvents = filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
         Map<Long, Long> stats = statsEventService.getStats(listOfEvents, false);
+
         statsEventService.postViews(stats, listOfEvents);
 
         return listOfEvents;
@@ -73,12 +73,10 @@ public class PublicEventServiceImpl implements PublicEventService {
     @Override
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
 
-        statsEventService.postStats(request);
-
-        Optional<Event> eventOptional = repository.findById(eventId);
-        Event event = eventOptional.get();
+        Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
         Map<Long, Long> stats = statsEventService.getStats(List.of(EventMapper.toFullEventDto(event)), false);
         event.setViews(stats.get(eventId));
+        statsEventService.postStats(request);
 
         return EventMapper.toFullEventDto(event);
     }

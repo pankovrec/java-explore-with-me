@@ -38,17 +38,14 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         checkDuplicateName(newCategoryDto, check);
         Category category = new Category();
         category.setName(newCategoryDto.getName());
-        Category prePostedCategory = repository.save(category);
-        return CategoryMapper.toCategoryDto(prePostedCategory);
+        return CategoryMapper.toCategoryDto(repository.save(category));
     }
 
     @Override
     public CategoryDto patchCategory(Long catId, CategoryDto categoryDto) {
         List<Category> check = repository.findAllByName(categoryDto.getName());
         checkDuplicateName(categoryDto, check);
-        Category category = CategoryMapper.fromCategoryDto(categoryDto);
-        repository.save(category);
-        return CategoryMapper.toCategoryDto(category);
+        return CategoryMapper.toCategoryDto(repository.save(CategoryMapper.fromCategoryDto(categoryDto)));
     }
 
     @Override

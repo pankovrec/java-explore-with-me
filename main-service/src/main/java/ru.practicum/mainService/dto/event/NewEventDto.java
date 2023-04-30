@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 public class NewEventDto {
     @NotNull
     private String annotation;
+    @NotNull
     private Long category;
     @NotNull
     private String description;

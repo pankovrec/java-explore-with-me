@@ -10,21 +10,21 @@ import java.util.stream.Collectors;
 
 public class CompilationMapper {
 
-    public static CompilationDto toCompilationDto(Compilation entity) {
+    public static CompilationDto toCompilationDto(Compilation compilation) {
         CompilationDto dto = new CompilationDto();
-        dto.setId(entity.getId());
-        dto.setPinned(entity.getPinned());
-        dto.setTitle(entity.getTitle());
-        dto.setEvents(entity.getEvents().stream()
+        dto.setId(compilation.getId());
+        dto.setPinned(compilation.getPinned());
+        dto.setTitle(compilation.getTitle());
+        dto.setEvents(compilation.getEvents().stream()
                 .map(CompilationDto.EventShortDto::eventToEventShortDto)
                 .collect(Collectors.toList()));
         return dto;
     }
 
-    public static Compilation fromCompilationDto(NewCompilationDto dto) {
+    public static Compilation fromCompilationDto(NewCompilationDto compilationDto) {
         Compilation compilation = new Compilation();
-        compilation.setPinned(dto.getPinned());
-        compilation.setTitle(dto.getTitle());
+        compilation.setPinned(compilationDto.getPinned());
+        compilation.setTitle(compilationDto.getTitle());
         return compilation;
     }
 }

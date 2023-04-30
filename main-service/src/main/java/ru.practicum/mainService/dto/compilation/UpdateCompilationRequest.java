@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -14,7 +15,9 @@ import java.util.List;
 @Setter
 @Getter
 public class UpdateCompilationRequest {
+    @NotNull
     private List<Long> events;
     private Boolean pinned;
+    @NotNull
     private String title;
 }

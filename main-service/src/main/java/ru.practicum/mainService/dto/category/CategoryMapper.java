@@ -8,9 +8,9 @@ import ru.practicum.mainService.model.Category;
 
 public class CategoryMapper {
 
-    public static CategoryDto toCategoryDto(Category entity) {
-        return new CategoryDto(entity.getId(),
-                entity.getName());
+    public static CategoryDto toCategoryDto(Category category) {
+        return new CategoryDto(category.getId(),
+                category.getName());
     }
 
     public static Category fromCategoryDto(CategoryDto categoryDto) {

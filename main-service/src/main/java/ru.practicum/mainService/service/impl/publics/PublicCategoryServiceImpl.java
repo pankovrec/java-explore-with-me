@@ -13,7 +13,6 @@ import ru.practicum.mainService.repository.publics.PublicCategoryRepository;
 import ru.practicum.mainService.service.publics.PublicCategoryService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -39,10 +38,9 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
 
     @Override
     public CategoryDto getCategoryById(Long catId) {
-        Optional<Category> category = repository.findById(catId);
-        if (category.isEmpty()) {
+        if (repository.findById(catId).isEmpty()) {
             throw new NotFoundCategoryException("Категория не найдена или недоступна " + catId);
         }
-        return CategoryMapper.toCategoryDto(category.get());
+        return CategoryMapper.toCategoryDto(repository.findById(catId).get());
     }
 }

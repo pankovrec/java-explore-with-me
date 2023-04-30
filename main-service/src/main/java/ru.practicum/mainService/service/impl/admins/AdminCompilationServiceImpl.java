@@ -13,7 +13,7 @@ import ru.practicum.mainService.repository.admins.AdminEventRepository;
 import ru.practicum.mainService.service.admins.AdminCompilationService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 /**
  * CompilationServiceAdminImpl
@@ -37,33 +37,26 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         Compilation compilation = CompilationMapper.fromCompilationDto(newCompilationDto);
         List<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
         compilation.setEvents(events);
-        Compilation prePostCompilation = repository.save(compilation);
-        return CompilationMapper.toCompilationDto(prePostCompilation);
+        return CompilationMapper.toCompilationDto(repository.save(compilation));
     }
 
     @Override
     public CompilationDto patchCompilation(Long compId, UpdateCompilationRequest updateCompilationRequest) {
 
-        Optional<Compilation> compilationOptional = repository.findById(compId);
-        Compilation compilation = compilationOptional.get();
+        Compilation compilation = repository.findById(compId).orElseThrow(NoSuchElementException::new);
 
         if (updateCompilationRequest.getEvents() != null) {
-            List<Event> events = eventRepository.findAllByIdIn(updateCompilationRequest.getEvents());
-            compilation.setEvents(events);
+            compilation.setEvents(eventRepository.findAllByIdIn(updateCompilationRequest.getEvents()));
         }
 
         if (updateCompilationRequest.getPinned() != null)
             compilation.setPinned(updateCompilationRequest.getPinned());
 
-        Compilation prePatchedCompilation = repository.save(compilation);
-
-        return CompilationMapper.toCompilationDto(prePatchedCompilation);
+        return CompilationMapper.toCompilationDto(repository.save(compilation));
     }
 
     @Override
     public void deleteCompilation(Long compId) {
-
-        Optional<Compilation> compilationOptional = repository.findById(compId);
-        repository.delete(compilationOptional.get());
+        repository.delete(repository.findById(compId).orElseThrow(NoSuchElementException::new));
     }
 }

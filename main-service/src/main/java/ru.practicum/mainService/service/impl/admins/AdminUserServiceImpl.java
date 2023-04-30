@@ -10,7 +10,7 @@ import ru.practicum.mainService.repository.admins.AdminUserRepository;
 import ru.practicum.mainService.service.admins.AdminUserService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 /**
  * UserServiceAdminImpl
@@ -49,7 +49,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public void delete(Long id) {
-        Optional<User> check = repository.findById(id);
+        User check = repository.findById(id).orElseThrow(NoSuchElementException::new);
         repository.deleteById(id);
     }
 }

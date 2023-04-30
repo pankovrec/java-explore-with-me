@@ -36,7 +36,7 @@ public class StatsEventServiceImpl implements StatsEventService {
         Map<Long, Long> views = new HashMap<>();
         events.forEach(e -> views.put(e.getId(), 0L));
 
-        Optional<LocalDateTime> startOptional = events.stream()
+    Optional<LocalDateTime> startOptional = events.stream()
                 .map(EventFullDto::getPublishedOn)
                 .filter(Objects::nonNull).min(LocalDateTime::compareTo);
 
@@ -71,8 +71,7 @@ public class StatsEventServiceImpl implements StatsEventService {
 
     @Override
     public void postStats(HttpServletRequest request) {
-        HitDto hitDto = createDto(request);
-        statsClient.sendHit(hitDto);
+        statsClient.sendHit(createDto(request));
     }
 
     public void postViews(Map<Long, Long> views, List<EventFullDto> events) {

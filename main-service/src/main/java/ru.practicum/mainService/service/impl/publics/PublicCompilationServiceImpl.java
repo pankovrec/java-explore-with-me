@@ -11,7 +11,7 @@ import ru.practicum.mainService.repository.publics.PublicCompilationRepository;
 import ru.practicum.mainService.service.publics.PublicCompilationService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -37,13 +37,11 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
         } else {
             compilations = repository.findAll(pageRequest).toList();
         }
-        return compilations.stream()
-                .map(CompilationMapper::toCompilationDto).collect(Collectors.toList());
+        return compilations.stream().map(CompilationMapper::toCompilationDto).collect(Collectors.toList());
     }
 
     @Override
     public CompilationDto getCompilationById(Long compId) {
-        Optional<Compilation> compilation = repository.findById(compId);
-        return CompilationMapper.toCompilationDto(compilation.get());
+        return CompilationMapper.toCompilationDto(repository.findById(compId).orElseThrow(NoSuchElementException::new));
     }
 }

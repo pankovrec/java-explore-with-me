@@ -10,6 +10,8 @@ import ru.practicum.mainService.model.Location;
 import ru.practicum.mainService.model.State;
 import ru.practicum.mainService.model.User;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -23,11 +25,14 @@ import java.time.LocalDateTime;
 public class EventFullDto {
 
     private Long id;
+    @NotBlank
     private String annotation;
+    @NotNull
     private CategoryDto category;
     private Long confirmedRequests;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn;
+    @NotBlank
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
@@ -39,6 +44,7 @@ public class EventFullDto {
     private LocalDateTime publishedOn;
     private Boolean requestModeration;
     private State state;
+    @NotBlank
     private String title;
     private Long views;
 
@@ -48,11 +54,12 @@ public class EventFullDto {
     @Getter
     public static class CategoryDto {
         private Long id;
+        @NotNull
         private String name;
 
-        public static CategoryDto categoryToCategoryDto(Category entity) {
-            return new CategoryDto(entity.getId(),
-                    entity.getName());
+        public static CategoryDto categoryToCategoryDto(Category category) {
+            return new CategoryDto(category.getId(),
+                    category.getName());
         }
     }
 
@@ -62,12 +69,13 @@ public class EventFullDto {
     @Getter
     public static class UserShortDto {
         private Long id;
+        @NotNull
         private String name;
 
-        public static UserShortDto userToUserShortDto(User entity) {
+        public static UserShortDto userToUserShortDto(User user) {
             UserShortDto dto = new UserShortDto();
-            dto.setId(entity.getId());
-            dto.setName(entity.getName());
+            dto.setId(user.getId());
+            dto.setName(user.getName());
             return dto;
         }
     }
