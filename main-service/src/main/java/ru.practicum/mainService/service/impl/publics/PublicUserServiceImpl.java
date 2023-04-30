@@ -7,7 +7,6 @@ import ru.practicum.mainService.repository.publics.PublicUserRepository;
 import ru.practicum.mainService.service.publics.PublicUserService;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 /**
  * UserServicePublicImpl
