@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.StatsClient;
-import ru.practicum.mainService.model.Event;
+import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.service.stats.StatsEventService;
 import ru.practicum.stats.dto.HitDto;
 import ru.practicum.stats.dto.HitDtoAnswer;
@@ -31,13 +31,13 @@ public class StatsEventServiceImpl implements StatsEventService {
     }
 
     @Override
-    public Map<Long, Long> getStats(List<Event> events, Boolean unique) {
+    public Map<Long, Long> getStats(List<EventFullDto> events, Boolean unique) {
 
         Map<Long, Long> views = new HashMap<>();
         events.forEach(e -> views.put(e.getId(), 0L));
 
         Optional<LocalDateTime> startOptional = events.stream()
-                .map(Event::getPublishedOn)
+                .map(EventFullDto::getPublishedOn)
                 .filter(Objects::nonNull).min(LocalDateTime::compareTo);
 
         if (startOptional.isEmpty()) {
@@ -48,7 +48,7 @@ public class StatsEventServiceImpl implements StatsEventService {
 
         LocalDateTime end = LocalDateTime.now();
 
-        List<Long> ids = events.stream().map(Event::getId).collect(Collectors.toList());
+        List<Long> ids = events.stream().map(EventFullDto::getId).collect(Collectors.toList());
         List<String> uris = ids.stream().map(id -> "/events/" + id).collect(Collectors.toList());
 
         ResponseEntity<Object> response = statsClient.getStats(start, end, uris, unique);
@@ -75,8 +75,8 @@ public class StatsEventServiceImpl implements StatsEventService {
         statsClient.sendHit(hitDto);
     }
 
-    public void postViews(Map<Long, Long> views, List<Event> events) {
-        for (Event event : events) {
+    public void postViews(Map<Long, Long> views, List<EventFullDto> events) {
+        for (EventFullDto event : events) {
             Long view = views.get(event.getId());
             if (view == null) {
                 view = 0L;

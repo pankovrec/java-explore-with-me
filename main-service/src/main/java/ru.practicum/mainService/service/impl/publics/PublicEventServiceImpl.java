@@ -16,10 +16,7 @@ import ru.practicum.mainService.service.stats.StatsEventService;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -66,10 +63,11 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
         Pageable pageRequest = PageRequest.of((from / size), size);
         filteredEvents = repository.findAll(filter, pageRequest).toList();
-        Map<Long, Long> stats = statsEventService.getStats(filteredEvents, false);
-        statsEventService.postViews(stats, filteredEvents);
+        List<EventFullDto> listOfEvents = filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
+        Map<Long, Long> stats = statsEventService.getStats(listOfEvents, false);
+        statsEventService.postViews(stats, listOfEvents);
 
-        return filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
+        return listOfEvents;
     }
 
     @Override
@@ -79,7 +77,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         Optional<Event> eventOptional = repository.findById(eventId);
         Event event = eventOptional.get();
-        Map<Long, Long> stats = statsEventService.getStats(List.of(event), false);
+        Map<Long, Long> stats = statsEventService.getStats(List.of(EventMapper.toFullEventDto(event)), false);
         event.setViews(stats.get(eventId));
 
         return EventMapper.toFullEventDto(event);

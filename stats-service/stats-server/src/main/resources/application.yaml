@@ -20,7 +20,7 @@ spring:
       mode: always
 logging:
   level:
-    ru.practicum.mainService: info
+    ru.practicum.exploreWithMe: info
     org:
       springframework:
         orm.jpa: info

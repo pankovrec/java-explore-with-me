@@ -28,11 +28,11 @@ public class StatsController {
     public ResponseEntity<HitDto> hit(@Valid @RequestBody HitDto hitDto) {
         log.info("Обрабатываю запрос /hit");
         return new ResponseEntity<>(
-                mapper.toHitDto(statsService.saveHit(mapper.toHit(hitDto))), HttpStatus.CREATED);
+                mapper.toHitDto(statsService.postHit(hitDto)), HttpStatus.CREATED);
     }
 
     @GetMapping("/stats")
-    public List<ViewStats> getViewStats(
+    public List<ViewStats> getStats(
             String start,
             String end,
             @RequestParam(defaultValue = "") List<String> uris,

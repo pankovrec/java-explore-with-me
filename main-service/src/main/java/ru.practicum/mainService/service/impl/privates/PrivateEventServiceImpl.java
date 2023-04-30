@@ -56,15 +56,16 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     public List<EventShortDto> getEvents(Long userId, Integer from, Integer size) {
         Pageable pageRequest = PageRequest.of((from / size), size);
         List<Event> events = repository.findAllByInitiatorId(userId, pageRequest);
-        Map<Long, Long> stats = statsEventService.getStats(events, false);
-        statsEventService.postViews(stats, events);
+        List<EventFullDto> listOfEventsForStats = events.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
+        Map<Long, Long> stats = statsEventService.getStats(listOfEventsForStats, false);
+        statsEventService.postViews(stats, listOfEventsForStats);
         return events.stream().map(EventMapper::toShortEventDto).collect(Collectors.toList());
     }
 
     @Override
     public EventFullDto getEventByEventId(Long userId, Long eventId) {
         Event event = repository.findByIdAndInitiatorId(eventId, userId);
-        Map<Long, Long> stats = statsEventService.getStats(List.of(event), false);
+        Map<Long, Long> stats = statsEventService.getStats(List.of(EventMapper.toFullEventDto(event)), false);
         event.setViews(stats.get(eventId));
         return EventMapper.toFullEventDto(event);
     }
@@ -101,7 +102,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event event = eventOptional.get();
         checkStatus(eventDto, event);
         Event updatedEvent = repository.save(event);
-        Map<Long, Long> stats = statsEventService.getStats(List.of(updatedEvent), false);
+        Map<Long, Long> stats = statsEventService.getStats(List.of(EventMapper.toFullEventDto(updatedEvent)), false);
         updatedEvent.setViews(stats.get(eventId));
 
         return EventMapper.toFullEventDto(updatedEvent);

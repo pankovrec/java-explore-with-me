@@ -1,6 +1,6 @@
 package ru.practicum.mainService.service.stats;
 
-import ru.practicum.mainService.model.Event;
+import ru.practicum.mainService.dto.event.EventFullDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -14,7 +14,7 @@ public interface StatsEventService {
     /**
      * Получить статистику
      */
-    Map<Long, Long> getStats(List<Event> events, Boolean unique);
+    Map<Long, Long> getStats(List<EventFullDto> events, Boolean unique);
 
     /**
      * добавить в статистику
@@ -24,5 +24,5 @@ public interface StatsEventService {
     /**
      * добавить просмотры
      */
-    void postViews(Map<Long, Long> views, List<Event> events);
+    void postViews(Map<Long, Long> views, List<EventFullDto> events);
 }

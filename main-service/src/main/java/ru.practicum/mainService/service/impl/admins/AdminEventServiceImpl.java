@@ -67,9 +67,10 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
         Pageable pageRequest = PageRequest.of((from / size), size);
         filteredEvents = repository.findAll(filter, pageRequest).toList();
-        Map<Long, Long> stats = statsEventService.getStats(filteredEvents, false);
-        statsEventService.postViews(stats, filteredEvents);
-        return filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
+        List<EventFullDto> listOfEvents = filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
+        Map<Long, Long> stats = statsEventService.getStats(listOfEvents, false);
+        statsEventService.postViews(stats, listOfEvents);
+        return listOfEvents;
     }
 
     @Override
