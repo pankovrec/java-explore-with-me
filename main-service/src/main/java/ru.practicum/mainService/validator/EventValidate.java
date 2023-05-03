@@ -28,9 +28,8 @@ public class EventValidate {
     public void eventValidateDate(UpdateUserRequest eventDto) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
         if (eventDto.getEventDate() != null && LocalDateTime.parse(eventDto.getEventDate(), formatter)
-                .isBefore(LocalDateTime.now().plus(2, ChronoUnit.HOURS))) {
+                .isBefore(LocalDateTime.now().plus(2, ChronoUnit.HOURS)))
             throw new EventDateIncorrectException("дата должна быть в прошлом " + eventDto.getEventDate());
-        }
     }
 
     public void eventValidateDate(UpdateAdminRequest eventDto) {

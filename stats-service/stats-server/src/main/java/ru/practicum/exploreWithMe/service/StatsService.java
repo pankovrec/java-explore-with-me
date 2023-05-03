@@ -17,7 +17,7 @@ public interface StatsService {
     Hit postHit(HitDto hit);
 
     /**
-     * просмотр статистику
+     * просмотр статистики
      */
     List<ViewStats> viewStats(String start, String end, List<String> uris, Boolean unique);
 }

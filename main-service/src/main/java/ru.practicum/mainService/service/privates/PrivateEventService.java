@@ -18,12 +18,12 @@ public interface PrivateEventService {
     /**
      * получить событие по id
      */
-    EventFullDto getEventByEventId(Long userId, Long eventId);
+    EventFullDto getEvent(Long userId, Long eventId);
 
     /**
      * получить список участников события
      */
-    List<ParticipationRequestDto> getEventParticipants(Long userId, Long eventId);
+    List<ParticipationRequestDto> getParticipants(Long userId, Long eventId);
 
     /**
      * добавить событие
@@ -33,10 +33,10 @@ public interface PrivateEventService {
     /**
      * обновить событие по id
      */
-    EventFullDto patchUserEventById(Long userId, Long eventId, UpdateUserRequest eventDto);
+    EventFullDto patchEvent(Long userId, Long eventId, UpdateUserRequest eventDto);
 
     /**
      * обновить статус запроса на участие
      */
-    RequestStatusUpdateResult changeRequestStatus(Long userId, Long eventId, RequestStatusUpdateRequest requestStatusUpdateRequest);
+    RequestStatusUpdateResult changeStatusOfRequest(Long userId, Long eventId, RequestStatusUpdateRequest requestStatusUpdateRequest);
 }

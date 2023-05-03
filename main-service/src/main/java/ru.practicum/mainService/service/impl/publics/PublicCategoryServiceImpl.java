@@ -37,7 +37,7 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
     }
 
     @Override
-    public CategoryDto getCategoryById(Long catId) {
+    public CategoryDto getCategory(Long catId) {
         if (repository.findById(catId).isEmpty()) {
             throw new NotFoundCategoryException("Категория не найдена или недоступна " + catId);
         }

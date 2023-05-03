@@ -31,10 +31,12 @@ public class StatsClient extends BaseClient {
                         .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                         .build()
         );
-        log.info("creating stats with url = {}", serverUrl);
+        log.info("StatsServerUrl = {}", serverUrl);
     }
 
     public ResponseEntity<Object> sendHit(HitDto hitDto) {
+        log.info("Sending hit");
+
         return post("/hit", hitDto);
     }
 
@@ -46,8 +48,7 @@ public class StatsClient extends BaseClient {
                 "uris", uris,
                 "unique", unique);
 
-        log.info("get stats from = {} end = {} uris = {} ids = {}",
-                parameters.get("start"), parameters.get("end"), parameters.get("uris"), parameters.get("unique"));
+        log.info("get stats");
 
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }

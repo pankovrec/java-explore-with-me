@@ -9,15 +9,19 @@ import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.EventMapper;
 import ru.practicum.mainService.dto.event.UpdateAdminRequest;
 import ru.practicum.mainService.error.exception.IncorrectStateEventAdminException;
-import ru.practicum.mainService.model.*;
+import ru.practicum.mainService.model.Event;
+import ru.practicum.mainService.model.QEvent;
+import ru.practicum.mainService.model.State;
+import ru.practicum.mainService.model.StateAction;
 import ru.practicum.mainService.repository.admins.AdminCategoryRepository;
 import ru.practicum.mainService.repository.admins.AdminEventRepository;
 import ru.practicum.mainService.service.admins.AdminEventService;
-import ru.practicum.mainService.service.stats.StatsEventService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -31,13 +35,10 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final AdminCategoryRepository categoryRepository;
 
-    private final StatsEventService statsEventService;
-
     @Autowired
-    public AdminEventServiceImpl(AdminEventRepository repository, AdminCategoryRepository categoryRepository, StatsEventService statsEventService) {
+    public AdminEventServiceImpl(AdminEventRepository repository, AdminCategoryRepository categoryRepository) {
         this.repository = repository;
         this.categoryRepository = categoryRepository;
-        this.statsEventService = statsEventService;
     }
 
     @Override
@@ -62,10 +63,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
         Pageable pageRequest = PageRequest.of((from / size), size);
         List<Event> filteredEvents = repository.findAll(filter, pageRequest).toList();
-        List<EventFullDto> listOfEvents = filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
-        Map<Long, Long> stats = statsEventService.getStats(listOfEvents, false);
-        statsEventService.postViews(stats, listOfEvents);
-        return listOfEvents;
+        return filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
     }
 
     @Override
@@ -93,33 +91,30 @@ public class AdminEventServiceImpl implements AdminEventService {
             event.setParticipantLimit(updateAdminRequest.getParticipantLimit());
         if (updateAdminRequest.getRequestModeration() != null)
             event.setRequestModeration(updateAdminRequest.getRequestModeration());
-        if (updateAdminRequest.getStateAction() != null) {
-            if (updateAdminRequest.getStateAction() == StateAction.PUBLISH_EVENT) {
-                event.setState(State.PUBLISHED);
-                event.setPublishedOn(LocalDateTime.now());
-            } else if (updateAdminRequest.getStateAction() == StateAction.SEND_TO_REVIEW) {
-                event.setState(State.PENDING);
-            } else {
-                event.setState(State.CANCELED);
-            }
-        }
-
         if (updateAdminRequest.getTitle() != null)
             event.setTitle(updateAdminRequest.getTitle());
-
+        if (updateAdminRequest.getStateAction() != null) {
+            switch (updateAdminRequest.getStateAction()) {
+                case PUBLISH_EVENT:
+                    event.setState(State.PUBLISHED);
+                    event.setPublishedOn(LocalDateTime.now());
+                    break;
+                case SEND_TO_REVIEW:
+                    event.setState(State.PENDING);
+                    break;
+                default:
+                    event.setState(State.CANCELED);
+                    break;
+            }
+        }
         return EventMapper.toFullEventDto(repository.save(event));
     }
 
     private static void checkStatus(UpdateAdminRequest updateAdminRequest, Event event) {
-        if ((updateAdminRequest.getStateAction() == StateAction.PUBLISH_EVENT)
-                && event.getState() != State.PENDING) {
-            throw new IncorrectStateEventAdminException("Нельзя обновлять событие с таким статусом: "
-                    + event.getState());
-        }
-
         if (updateAdminRequest.getStateAction() == StateAction.REJECT_EVENT
-                && event.getState() == State.PUBLISHED) {
-            throw new IncorrectStateEventAdminException("Нельзя обновлять событие с таким статусом: "
+                && event.getState() == State.PUBLISHED || updateAdminRequest.getStateAction() == StateAction.PUBLISH_EVENT
+                && event.getState() != State.PENDING) {
+            throw new IncorrectStateEventAdminException("Нельзя обновить событие с таким статусом: "
                     + event.getState());
         }
     }

@@ -17,5 +17,5 @@ public interface PublicCategoryService {
     /**
      * получить категорию по id
      */
-    CategoryDto getCategoryById(Long catId);
+    CategoryDto getCategory(Long catId);
 }

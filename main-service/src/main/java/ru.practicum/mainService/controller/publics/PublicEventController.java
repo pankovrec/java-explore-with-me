@@ -46,15 +46,15 @@ public class PublicEventController {
                                         @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                         @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
                                         HttpServletRequest request) {
-        log.info("Get list events from={}, size={}", from, size);
+        log.info("Получен список событий");
         statsClient.sendHit(new HitDto());
         return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
     }
 
     @GetMapping(path = "/{id}")
-    public EventFullDto getEventById(@NotNull @PathVariable(name = "id") Long id, HttpServletRequest request) {
-        log.info("Get full event by id={}", id);
+    public EventFullDto getEvent(@NotNull @PathVariable(name = "id") Long id, HttpServletRequest request) {
+        log.info("Получено событие с Id={}", id);
         statsClient.sendHit(new HitDto());
-        return eventService.getEventById(id, request);
+        return eventService.getEvent(id, request);
     }
 }

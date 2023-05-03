@@ -37,7 +37,7 @@ public class AdminCompilationController {
     @Transactional
     public ResponseEntity<CompilationDto> postCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
         CompilationDto compilationDto = compilationService.postCompilation(newCompilationDto);
-        log.info("Post compilation {}", newCompilationDto);
+        log.info("Опубликована подборка {}", newCompilationDto);
         return new ResponseEntity<>(compilationDto, HttpStatus.CREATED);
     }
 
@@ -45,7 +45,7 @@ public class AdminCompilationController {
     @Transactional
     public CompilationDto patchCompilation(@Positive @PathVariable(name = "compId") Long compId,
                                            @RequestBody UpdateCompilationRequest updateCompilationRequest) {
-        log.info("Patch compilation by id={}", compId);
+        log.info("Обновлена подборка с Id={}", compId);
         return compilationService.patchCompilation(compId, updateCompilationRequest);
     }
 
@@ -53,7 +53,7 @@ public class AdminCompilationController {
     @Transactional
     public ResponseEntity<Object> deleteCompilation(@Positive @PathVariable(name = "compId") Long compId) {
         compilationService.deleteCompilation(compId);
-        log.info("Delete compilation by id={}", compId);
+        log.info("Удалена подборка с Id={}", compId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

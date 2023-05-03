@@ -42,22 +42,22 @@ public class PrivateEventController {
     public List<EventShortDto> getEvents(@NotNull @PathVariable(name = "userId") Long userId,
                                          @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                          @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        log.info("Get list events by userId={}, from={}, size={}", userId, from, size);
+        log.info("Получен список событий пользователя {}", userId);
         return eventService.getEvents(userId, from, size);
     }
 
     @GetMapping(path = "users/{userId}/events/{eventId}")
-    public EventFullDto getEventByEventId(@Positive @PathVariable(name = "userId") Long userId,
-                                          @Positive @PathVariable(name = "eventId") Long eventId) {
-        log.info("Get full event by userId={} and id={}", userId, eventId);
-        return eventService.getEventByEventId(userId, eventId);
+    public EventFullDto getEvent(@Positive @PathVariable(name = "userId") Long userId,
+                                 @Positive @PathVariable(name = "eventId") Long eventId) {
+        log.info("Получено событие с id={}", eventId);
+        return eventService.getEvent(userId, eventId);
     }
 
     @GetMapping(path = "users/{userId}/events/{eventId}/requests")
-    public List<ParticipationRequestDto> getEventParticipants(@Positive @PathVariable(name = "userId") Long userId,
-                                                              @Positive @PathVariable(name = "eventId") Long eventId) {
-        log.info("Get request by userId={} and eventId={}", userId, eventId);
-        return eventService.getEventParticipants(userId, eventId);
+    public List<ParticipationRequestDto> getParticipants(@Positive @PathVariable(name = "userId") Long userId,
+                                                         @Positive @PathVariable(name = "eventId") Long eventId) {
+        log.info("Получен запрос на участие от пользователя с Id={} в событии с Id={}", userId, eventId);
+        return eventService.getParticipants(userId, eventId);
     }
 
     @PostMapping(path = "users/{userId}/events")
@@ -66,28 +66,27 @@ public class PrivateEventController {
                                                   @Valid @NotNull @RequestBody NewEventDto newEventDto) {
         validator.eventValidateDate(newEventDto);
         EventFullDto event = eventService.postEvent(userId, newEventDto);
-        log.info("Post by userId={} new event={}", userId, newEventDto);
+        log.info("Опубликовано новое событие ={}", newEventDto);
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
     @PatchMapping(path = "users/{userId}/events/{eventId}")
     @Transactional
-    public EventFullDto patchUserEventById(@Positive @PathVariable(name = "userId") Long userId,
-                                           @Positive @PathVariable(name = "eventId") Long eventId,
-                                           @NotNull @RequestBody UpdateUserRequest updateUserRequest) {
+    public EventFullDto patchEvent(@Positive @PathVariable(name = "userId") Long userId,
+                                   @Positive @PathVariable(name = "eventId") Long eventId,
+                                   @NotNull @RequestBody UpdateUserRequest updateUserRequest) {
         validator.eventValidateDate(updateUserRequest);
-        log.info("Patch event id={} by userId={}, update event={}", eventId, userId, updateUserRequest);
-        return eventService.patchUserEventById(userId, eventId, updateUserRequest);
+        log.info("Обновлено событие с  Id={}", eventId);
+        return eventService.patchEvent(userId, eventId, updateUserRequest);
     }
 
     @PatchMapping(path = "users/{userId}/events/{eventId}/requests")
     @Transactional
-    public RequestStatusUpdateResult changeRequestStatus(@Positive @PathVariable(name = "userId") Long userId,
-                                                         @Positive @PathVariable(name = "eventId") Long eventId,
-                                                         @NotNull @RequestBody RequestStatusUpdateRequest
-                                                                 requestStatusUpdateRequest) {
-        log.info("Patch requests userId={}, eventId={}, and eventRequestStatusUpdateRequest={}", userId, eventId,
-                requestStatusUpdateRequest);
-        return eventService.changeRequestStatus(userId, eventId, requestStatusUpdateRequest);
+    public RequestStatusUpdateResult changeStatusOfRequest(@Positive @PathVariable(name = "userId") Long userId,
+                                                           @Positive @PathVariable(name = "eventId") Long eventId,
+                                                           @NotNull @RequestBody RequestStatusUpdateRequest
+                                                                   requestStatusUpdateRequest) {
+        log.info("Изменился статус запроса на участие в событии с Id={}", eventId);
+        return eventService.changeStatusOfRequest(userId, eventId, requestStatusUpdateRequest);
     }
 }

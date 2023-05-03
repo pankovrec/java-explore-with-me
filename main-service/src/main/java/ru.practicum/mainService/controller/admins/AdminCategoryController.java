@@ -36,7 +36,7 @@ public class AdminCategoryController {
     @Transactional
     public ResponseEntity<CategoryDto> postCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
         CategoryDto categoryDto = categoryService.postCategory(newCategoryDto);
-        log.info("Post new category {}", newCategoryDto);
+        log.info("Опубликована новая категория {}", newCategoryDto);
         return new ResponseEntity<>(categoryDto, HttpStatus.CREATED);
     }
 
@@ -45,7 +45,7 @@ public class AdminCategoryController {
     public ResponseEntity<CategoryDto> patchCategory(@Positive @PathVariable(name = "catId") Long catId,
                                                      @Valid @RequestBody CategoryDto categoryDto) {
         CategoryDto updateCategory = categoryService.patchCategory(catId, categoryDto);
-        log.info("Patch category {} Id={}", categoryDto, catId);
+        log.info("Обновлена категория {} с Id={}", categoryDto, catId);
         return new ResponseEntity<>(updateCategory, HttpStatus.OK);
     }
 
@@ -53,7 +53,7 @@ public class AdminCategoryController {
     @Transactional
     public ResponseEntity deleteCategory(@Positive @PathVariable(name = "catId") Long catId) {
         categoryService.deleteCategory(catId);
-        log.info("Delete сategory with id={}", catId);
+        log.info("Удалена категория с Id={}", catId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

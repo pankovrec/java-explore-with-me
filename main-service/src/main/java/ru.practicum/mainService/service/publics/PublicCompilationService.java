@@ -17,5 +17,5 @@ public interface PublicCompilationService {
     /**
      * получить подборку по id
      */
-    CompilationDto getCompilationById(Long compId);
+    CompilationDto getCompilation(Long compId);
 }

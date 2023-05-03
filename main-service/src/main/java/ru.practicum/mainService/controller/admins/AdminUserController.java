@@ -41,7 +41,7 @@ public class AdminUserController {
     public List<UserDto> getUsers(@NotNull @RequestParam(name = "ids") List<Long> ids,
                                   @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                   @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        log.info("Get list users ids={} from={}, size={}", ids, from, size);
+        log.info("Получаем список пользователей с Id={}", ids);
         return userService.getUsers(ids, from, size)
                 .stream().map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
@@ -53,7 +53,7 @@ public class AdminUserController {
         User user = UserMapper.fromUserDto(userDto);
         User newUser = userService.postUser(user);
         UserDto newUserDto = UserMapper.toUserDto(newUser);
-        log.info("Post user {}", newUser);
+        log.info("Опубликован пользователь {}", newUser);
         return new ResponseEntity<>(newUserDto, HttpStatus.CREATED);
     }
 
@@ -61,7 +61,7 @@ public class AdminUserController {
     @Transactional
     public ResponseEntity deleteUser(@Positive @PathVariable(name = "userId") Long id) {
         userService.delete(id);
-        log.info("Delete user with id={}", id);
+        log.info("Удален пользователь с Id={}", id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

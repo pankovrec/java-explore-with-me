@@ -20,5 +20,5 @@ public interface PublicEventService {
     /**
      * получить событие по id
      */
-    EventFullDto getEventById(Long eventId, HttpServletRequest request);
+    EventFullDto getEvent(Long eventId, HttpServletRequest request);
 }

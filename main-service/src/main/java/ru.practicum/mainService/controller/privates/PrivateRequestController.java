@@ -32,25 +32,25 @@ public class PrivateRequestController {
     }
 
     @GetMapping
-    public List<ParticipationRequestDto> getUserRequests(@Positive @PathVariable(name = "userId") Long userId) {
-        log.info("Get list requests by userId={}", userId);
-        return requestService.getUserRequests(userId);
+    public List<ParticipationRequestDto> getRequests(@Positive @PathVariable(name = "userId") Long userId) {
+        log.info("Получен список запросов на участие пользователя с Id={}", userId);
+        return requestService.getRequests(userId);
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<ParticipationRequestDto> postRequestByUser(@Positive @PathVariable(name = "userId") Long userId,
-                                                                     @Positive @RequestParam(name = "eventId") Long eventId) {
-        ParticipationRequestDto requestDto = requestService.postParticipationRequest(userId, eventId);
-        log.info("Post request by userId={} on eventId={}", userId, eventId);
+    public ResponseEntity<ParticipationRequestDto> postRequest(@Positive @PathVariable(name = "userId") Long userId,
+                                                               @Positive @RequestParam(name = "eventId") Long eventId) {
+        ParticipationRequestDto requestDto = requestService.postRequest(userId, eventId);
+        log.info("Пользователь с Id={} опубликовал запрос на участие в событии с Id={}", userId, eventId);
         return new ResponseEntity<>(requestDto, HttpStatus.CREATED);
     }
 
     @PatchMapping(path = "{requestId}/cancel")
     @Transactional
-    public ParticipationRequestDto cancelRequestByUser(@Positive @PathVariable(name = "userId") Long userId,
-                                                       @Positive @PathVariable(name = "requestId") Long requestId) {
-        log.info("Patch by userId={} on requestId={}", userId, requestId);
+    public ParticipationRequestDto cancelRequest(@Positive @PathVariable(name = "userId") Long userId,
+                                                 @Positive @PathVariable(name = "requestId") Long requestId) {
+        log.info("Пользователь с Id={} отменил запрос с Id={} на участие в событии", userId, requestId);
         return requestService.cancelRequest(userId, requestId);
     }
 }

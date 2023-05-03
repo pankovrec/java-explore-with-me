@@ -32,16 +32,16 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
     public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageRequest = PageRequest.of((from / size), size);
         List<Compilation> compilations;
-        if (pinned != null) {
-            compilations = repository.findAllByPinned(pinned, pageRequest);
-        } else {
+        if (pinned == null) {
             compilations = repository.findAll(pageRequest).toList();
+        } else {
+            compilations = repository.findAllByPinned(pinned, pageRequest);
         }
         return compilations.stream().map(CompilationMapper::toCompilationDto).collect(Collectors.toList());
     }
 
     @Override
-    public CompilationDto getCompilationById(Long compId) {
+    public CompilationDto getCompilation(Long compId) {
         return CompilationMapper.toCompilationDto(repository.findById(compId).orElseThrow(NoSuchElementException::new));
     }
 }

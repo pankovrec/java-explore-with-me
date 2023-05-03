@@ -5,18 +5,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.StatsClient;
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.EventMapper;
 import ru.practicum.mainService.model.Event;
 import ru.practicum.mainService.model.QEvent;
 import ru.practicum.mainService.repository.publics.PublicEventRepository;
 import ru.practicum.mainService.service.publics.PublicEventService;
-import ru.practicum.mainService.service.stats.StatsEventService;
+import ru.practicum.stats.dto.HitDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -28,12 +31,12 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     private final PublicEventRepository repository;
 
-    private final StatsEventService statsEventService;
+    private final StatsClient statsClient;
 
     @Autowired
-    public PublicEventServiceImpl(PublicEventRepository repository, StatsEventService statsEventService) {
+    public PublicEventServiceImpl(PublicEventRepository repository, StatsClient statsClient) {
         this.repository = repository;
-        this.statsEventService = statsEventService;
+        this.statsClient = statsClient;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class PublicEventServiceImpl implements PublicEventService {
                                         String rangeEnd, Boolean onlyAvailable,
                                         String sort, Integer from, Integer size, HttpServletRequest request) {
 
-        statsEventService.postStats(request);
+        sendHit(request);
 
         QEvent qEvent = QEvent.event;
         BooleanExpression filter = qEvent.isNotNull();
@@ -62,22 +65,19 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
         Pageable pageRequest = PageRequest.of((from / size), size);
         List<Event> filteredEvents = repository.findAll(filter, pageRequest).toList();
-        List<EventFullDto> listOfEvents = filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
-        Map<Long, Long> stats = statsEventService.getStats(listOfEvents, false);
 
-        statsEventService.postViews(stats, listOfEvents);
-
-        return listOfEvents;
+        return filteredEvents.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
     }
 
     @Override
-    public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
+    public EventFullDto getEvent(Long eventId, HttpServletRequest request) {
 
         Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
-        Map<Long, Long> stats = statsEventService.getStats(List.of(EventMapper.toFullEventDto(event)), false);
-        event.setViews(stats.get(eventId));
-        statsEventService.postStats(request);
-
+        sendHit(request);
         return EventMapper.toFullEventDto(event);
+    }
+
+    private void sendHit(HttpServletRequest request) {
+        statsClient.sendHit(HitDto.builder().app("main-service").uri(request.getRequestURI()).ip(request.getRemoteAddr()).timestamp(LocalDateTime.now()).build());
     }
 }

@@ -12,12 +12,12 @@ public interface PrivateRequestService {
     /**
      * получить список запросов пользователя
      */
-    List<ParticipationRequestDto> getUserRequests(Long userId);
+    List<ParticipationRequestDto> getRequests(Long userId);
 
     /**
      * добавить запрос на участие
      */
-    ParticipationRequestDto postParticipationRequest(Long userId, Long eventId);
+    ParticipationRequestDto postRequest(Long userId, Long eventId);
 
     /**
      * отменить запрос на участие

@@ -15,10 +15,11 @@ import ru.practicum.mainService.repository.publics.PublicCategoryRepository;
 import ru.practicum.mainService.repository.publics.PublicRequestRepository;
 import ru.practicum.mainService.service.privates.PrivateEventService;
 import ru.practicum.mainService.service.publics.PublicUserService;
-import ru.practicum.mainService.service.stats.StatsEventService;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -36,39 +37,30 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     private final PublicUserService userService;
 
-    private final StatsEventService statsEventService;
-
     @Autowired
     public PrivateEventServiceImpl(PrivateEventRepository repository, PublicCategoryRepository categoryRepository,
-                                   PublicRequestRepository requestRepository, PublicUserService userService,
-                                   StatsEventService statsEventService) {
+                                   PublicRequestRepository requestRepository, PublicUserService userService) {
         this.repository = repository;
         this.categoryRepository = categoryRepository;
         this.requestRepository = requestRepository;
         this.userService = userService;
-        this.statsEventService = statsEventService;
     }
 
     @Override
     public List<EventShortDto> getEvents(Long userId, Integer from, Integer size) {
         Pageable pageRequest = PageRequest.of((from / size), size);
         List<Event> events = repository.findAllByInitiatorId(userId, pageRequest);
-        List<EventFullDto> listOfEvents = events.stream().map(EventMapper::toFullEventDto).collect(Collectors.toList());
-        Map<Long, Long> stats = statsEventService.getStats(listOfEvents, false);
-        statsEventService.postViews(stats, listOfEvents);
         return events.stream().map(EventMapper::toShortEventDto).collect(Collectors.toList());
     }
 
     @Override
-    public EventFullDto getEventByEventId(Long userId, Long eventId) {
+    public EventFullDto getEvent(Long userId, Long eventId) {
         Event event = repository.findByIdAndInitiatorId(eventId, userId);
-        Map<Long, Long> stats = statsEventService.getStats(List.of(EventMapper.toFullEventDto(event)), false);
-        event.setViews(stats.get(eventId));
         return EventMapper.toFullEventDto(event);
     }
 
     @Override
-    public List<ParticipationRequestDto> getEventParticipants(Long userId, Long eventId) {
+    public List<ParticipationRequestDto> getParticipants(Long userId, Long eventId) {
         return requestRepository.findAllByEventId(eventId).stream().map(RequestMapper::toRequestDto).collect(Collectors.toList());
     }
 
@@ -86,24 +78,19 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
-    public EventFullDto patchUserEventById(Long userId, Long eventId, UpdateUserRequest eventDto) {
+    public EventFullDto patchEvent(Long userId, Long eventId, UpdateUserRequest eventDto) {
 
         Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
         checkStatus(eventDto, event);
         Event updatedEvent = repository.save(event);
-        Map<Long, Long> stats = statsEventService.getStats(List.of(EventMapper.toFullEventDto(updatedEvent)), false);
-        updatedEvent.setViews(stats.get(eventId));
 
         return EventMapper.toFullEventDto(updatedEvent);
     }
 
     @Override
-    public RequestStatusUpdateResult changeRequestStatus(Long userId,
-                                                         Long eventId,
-                                                         RequestStatusUpdateRequest requestStatusUpdateRequest) {
-
-        List<RequestStatusUpdateResult.ParticipationRequestDto> confirmedRequests = new ArrayList<>();
-        List<RequestStatusUpdateResult.ParticipationRequestDto> rejectedRequests = new ArrayList<>();
+    public RequestStatusUpdateResult changeStatusOfRequest(Long userId,
+                                                           Long eventId,
+                                                           RequestStatusUpdateRequest requestStatusUpdateRequest) {
 
         Status newStatus = requestStatusUpdateRequest.getStatus();
 
@@ -112,34 +99,39 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
 
         Integer limit = event.getParticipantLimit();
-        Long confirmed = event.getConfirmedRequests();
+        Long confirmedRequests = event.getConfirmedRequests();
 
         if ((event.getParticipantLimit() > 0 && event.getRequestModeration())
-                && limit <= confirmed) {
+                && limit <= confirmedRequests) {
             throw new LimitRequestParticipantException("Лимит участников исчерпан.");
         }
 
         List<Request> requests = requestRepository.findAllByIdIn(requestStatusUpdateRequest.getRequestIds());
+        List<RequestStatusUpdateResult.ParticipationRequestDto> confirmed = new ArrayList<>();
+        List<RequestStatusUpdateResult.ParticipationRequestDto> rejected = new ArrayList<>();
 
         for (Request request : requests) {
 
             request.setStatus(newStatus);
 
-            if (newStatus == Status.CONFIRMED) {
-                confirmedRequests.add(RequestStatusUpdateResult.ParticipationRequestDto.toParticipationRequestDto(request));
-                confirmed++;
-                event.setConfirmedRequests(confirmed);
-                limit++;
+            switch (newStatus) {
+                case CONFIRMED:
+                    confirmed.add(RequestStatusUpdateResult.ParticipationRequestDto.toParticipationRequestDto(request));
+                    confirmedRequests++;
+                    event.setConfirmedRequests(confirmedRequests);
+                    limit++;
+                    break;
+                case REJECTED:
+                    rejected.add(RequestStatusUpdateResult.ParticipationRequestDto.toParticipationRequestDto(request));
+                    break;
             }
-            if (newStatus == Status.REJECTED)
-                rejectedRequests.add(RequestStatusUpdateResult.ParticipationRequestDto.toParticipationRequestDto(request));
         }
 
         requestRepository.saveAll(requests);
 
         RequestStatusUpdateResult result = new RequestStatusUpdateResult();
-        result.setConfirmedRequests(confirmedRequests);
-        result.setRejectedRequests(rejectedRequests);
+        result.setConfirmedRequests(confirmed);
+        result.setRejectedRequests(rejected);
         return result;
     }
 
@@ -149,11 +141,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
 
         if (eventDto.getStateAction() != null)
-            if (eventDto.getStateAction() == StateAction.REJECT_EVENT ||
-                    eventDto.getStateAction() == StateAction.CANCEL_REVIEW) {
-                event.setState(State.CANCELED);
-            } else {
-                event.setState(State.PENDING);
-            }
+            event.setState(eventDto.getStateAction() == StateAction.REJECT_EVENT ||
+                    eventDto.getStateAction() == StateAction.CANCEL_REVIEW ? State.CANCELED : State.PENDING);
     }
 }

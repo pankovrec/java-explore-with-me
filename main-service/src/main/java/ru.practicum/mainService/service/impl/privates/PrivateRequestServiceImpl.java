@@ -39,7 +39,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     }
 
     @Override
-    public List<ParticipationRequestDto> getUserRequests(Long userId) {
+    public List<ParticipationRequestDto> getRequests(Long userId) {
 
         userService.getUser(userId);
 
@@ -49,7 +49,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     }
 
     @Override
-    public ParticipationRequestDto postParticipationRequest(Long userId, Long eventId) {
+    public ParticipationRequestDto postRequest(Long userId, Long eventId) {
 
         User user = userService.getUser(userId);
 
@@ -61,15 +61,14 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         request.setEvent(event);
         request.setCreated(LocalDateTime.now());
         request.setStatus(Status.PENDING);
-        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
-            request.setStatus(Status.CONFIRMED);
-            Long confirmedRequests = event.getConfirmedRequests();
-            if (confirmedRequests == null)
-                confirmedRequests = 0L;
-            confirmedRequests++;
-            event.setConfirmedRequests(confirmedRequests);
-            eventRepository.save(event);
+        if (event.getRequestModeration() && event.getParticipantLimit() != 0) {
+            return RequestMapper.toRequestDto(repository.save(request));
         }
+        request.setStatus(Status.CONFIRMED);
+        Long confirmedRequests = event.getConfirmedRequests();
+        confirmedRequests++;
+        event.setConfirmedRequests(confirmedRequests);
+        eventRepository.save(event);
 
         return RequestMapper.toRequestDto(repository.save(request));
     }

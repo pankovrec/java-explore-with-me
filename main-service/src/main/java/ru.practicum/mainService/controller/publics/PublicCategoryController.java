@@ -32,13 +32,13 @@ public class PublicCategoryController {
     @GetMapping()
     public List<CategoryDto> getCategories(@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        log.info("Get list categories from={}, size={}", from, size);
+        log.info("Получен список категорий");
         return categoryService.getCategories(from, size);
     }
 
     @GetMapping(path = "/{catId}")
-    public CategoryDto getCategoryById(@Positive @PathVariable(name = "catId") Long catId) {
-        log.info("Get category by ID={}", catId);
-        return categoryService.getCategoryById(catId);
+    public CategoryDto getCategory(@Positive @PathVariable(name = "catId") Long catId) {
+        log.info("Получена категория с Id={}", catId);
+        return categoryService.getCategory(catId);
     }
 }

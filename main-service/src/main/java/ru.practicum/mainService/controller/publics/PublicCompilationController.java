@@ -35,14 +35,14 @@ public class PublicCompilationController {
     public List<CompilationDto> getCompilations(@RequestParam(name = "pinned", required = false) Boolean pinned,
                                                 @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        log.info("Get list compilations pinned={} from={}, size={}", pinned, from, size);
+        log.info("Получен список подборок");
         return compilationService.getCompilations(pinned, from, size);
     }
 
     @GetMapping(path = "/{compId}")
     public ResponseEntity<CompilationDto> getCompilation(@Positive @PathVariable(name = "compId") Long compId) {
-        CompilationDto compilationDto = compilationService.getCompilationById(compId);
-        log.info("Get compilation id={}", compId);
+        CompilationDto compilationDto = compilationService.getCompilation(compId);
+        log.info("Получена подборка с Id={}", compId);
         return new ResponseEntity<>(compilationDto, HttpStatus.OK);
     }
 }
