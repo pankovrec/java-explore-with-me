@@ -2,6 +2,7 @@ package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.model.Hit;
 import ru.practicum.exploreWithMe.model.ViewStats;
+import ru.practicum.stats.dto.HitDto;
 
 import java.util.List;
 
@@ -13,10 +14,10 @@ public interface StatsService {
     /**
      * добавить hit
      */
-    Hit saveHit(Hit hit);
+    Hit postHit(HitDto hit);
 
     /**
-     * просмотр статистику
+     * просмотр статистики
      */
     List<ViewStats> viewStats(String start, String end, List<String> uris, Boolean unique);
 }

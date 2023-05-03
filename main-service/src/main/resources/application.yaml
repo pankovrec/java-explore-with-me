@@ -1,6 +1,9 @@
 server:
   port: 8080
 
+stats-service:
+  url: http://localhost:9090
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ewm
@@ -20,6 +23,7 @@ spring:
       mode: always
 logging:
   level:
+    ru.practicum.mainService: info
     org:
       springframework:
         orm.jpa: info

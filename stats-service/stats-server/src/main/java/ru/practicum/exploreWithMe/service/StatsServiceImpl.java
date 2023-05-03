@@ -1,11 +1,13 @@
 package ru.practicum.exploreWithMe.service;
 
-import ru.practicum.exploreWithMe.model.Hit;
-import ru.practicum.exploreWithMe.model.ViewStats;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.exploreWithMe.mapper.StatsMapper;
+import ru.practicum.exploreWithMe.model.Hit;
+import ru.practicum.exploreWithMe.model.ViewStats;
 import ru.practicum.exploreWithMe.repository.StatsRepository;
+import ru.practicum.stats.dto.HitDto;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -22,29 +24,32 @@ import java.util.List;
 @Slf4j
 public class StatsServiceImpl implements StatsService {
     private final StatsRepository repository;
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public Hit saveHit(Hit hit) {
-        return repository.save(hit);
+    public Hit postHit(HitDto hit) {
+        return repository.save(StatsMapper.toHit(hit));
     }
 
     @Override
     public List<ViewStats> viewStats(String start, String end, List<String> uris, Boolean unique) {
-        LocalDateTime startDto;
-        LocalDateTime endDto;
-        if (start != null && end != null) {
-            startDto = LocalDateTime.parse(URLDecoder.decode(start, StandardCharsets.UTF_8), dateTimeFormatter);
-            endDto = LocalDateTime.parse(URLDecoder.decode(end, StandardCharsets.UTF_8), dateTimeFormatter);
-        } else {
-            startDto = LocalDateTime.MIN;
-            endDto = LocalDateTime.MAX;
-        }
+
+        LocalDateTime startDto = LocalDateTime.parse(URLDecoder.decode(start, StandardCharsets.UTF_8), formatter);
+        LocalDateTime endDto = LocalDateTime.parse(URLDecoder.decode(end, StandardCharsets.UTF_8), formatter);
+
         List<ViewStats> result;
-        if (unique) {
-            result = repository.getAllWithUniqueIp(startDto, endDto, uris);
+        if (uris == null || uris.isEmpty()) {
+            if (unique) {
+                result = repository.getAllStatsWithUniqueIpWithoutUris(startDto, endDto);
+            } else {
+                result = repository.getAllStatsWithoutUris(startDto, endDto);
+            }
         } else {
-            result = repository.getAll(startDto, endDto, uris);
+            if (unique) {
+                result = repository.getAllStatsWithUniqueIpWithUris(startDto, endDto, uris);
+            } else {
+                result = repository.getAllStatsWithUris(startDto, endDto, uris);
+            }
         }
         return result;
     }

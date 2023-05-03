@@ -10,7 +10,7 @@ import ru.practicum.stats.dto.HitDto;
 
 @Component
 public class StatsMapper {
-    public Hit toHit(HitDto hitDto) {
+    public static Hit toHit(HitDto hitDto) {
         Hit hit = new Hit();
         hit.setApp(hitDto.getApp());
         hit.setUri(hitDto.getUri());
