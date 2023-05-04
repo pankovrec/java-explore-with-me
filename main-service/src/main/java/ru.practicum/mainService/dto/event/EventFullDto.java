@@ -13,6 +13,7 @@ import ru.practicum.mainService.model.User;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * Event full dto
@@ -47,6 +48,7 @@ public class EventFullDto {
     @NotBlank
     private String title;
     private Long views;
+    private Set<CommentDto> comments;
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -78,5 +80,21 @@ public class EventFullDto {
             dto.setName(user.getName());
             return dto;
         }
+    }
+
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    public static class CommentDto {
+        private Long id;
+        @NotNull
+        private String text;
+        @NotNull
+        private UserShortDto user;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime created;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime updated;
+
     }
 }
