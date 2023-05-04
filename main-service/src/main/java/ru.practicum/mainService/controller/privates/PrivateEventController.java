@@ -39,7 +39,7 @@ public class PrivateEventController {
         this.validator = validator;
     }
 
-    @GetMapping(path = "users/{userId}/events")
+    @GetMapping
     public List<EventShortDto> getEvents(@NotNull @PathVariable(name = "userId") Long userId,
                                          @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                          @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -47,21 +47,21 @@ public class PrivateEventController {
         return eventService.getEvents(userId, from, size);
     }
 
-    @GetMapping(path = "users/{userId}/events/{eventId}")
+    @GetMapping(path = "{eventId}")
     public EventFullDto getEvent(@Positive @PathVariable(name = "userId") Long userId,
                                  @Positive @PathVariable(name = "eventId") Long eventId) {
         log.info("Получено событие с id={}", eventId);
         return eventService.getEvent(userId, eventId);
     }
 
-    @GetMapping(path = "users/{userId}/events/{eventId}/requests")
+    @GetMapping(path = "{eventId}/requests")
     public List<ParticipationRequestDto> getParticipants(@Positive @PathVariable(name = "userId") Long userId,
                                                          @Positive @PathVariable(name = "eventId") Long eventId) {
         log.info("Получен запрос на участие от пользователя с Id={} в событии с Id={}", userId, eventId);
         return eventService.getParticipants(userId, eventId);
     }
 
-    @PostMapping(path = "users/{userId}/events")
+    @PostMapping
     @Transactional
     public ResponseEntity<EventFullDto> postEvent(@Positive @PathVariable(name = "userId") Long userId,
                                                   @Valid @NotNull @RequestBody NewEventDto newEventDto) {
@@ -71,7 +71,7 @@ public class PrivateEventController {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
-    @PatchMapping(path = "users/{userId}/events/{eventId}")
+    @PatchMapping(path = "{eventId}")
     @Transactional
     public EventFullDto patchEvent(@Positive @PathVariable(name = "userId") Long userId,
                                    @Positive @PathVariable(name = "eventId") Long eventId,
@@ -81,7 +81,7 @@ public class PrivateEventController {
         return eventService.patchEvent(userId, eventId, updateUserRequest);
     }
 
-    @PatchMapping(path = "users/{userId}/events/{eventId}/requests")
+    @PatchMapping(path = "{eventId}/requests")
     @Transactional
     public RequestStatusUpdateResult changeStatusOfRequest(@Positive @PathVariable(name = "userId") Long userId,
                                                            @Positive @PathVariable(name = "eventId") Long eventId,
