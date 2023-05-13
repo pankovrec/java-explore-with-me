@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.StatsClient;
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.EventMapper;
+import ru.practicum.mainService.error.exception.NotFoundEventException;
 import ru.practicum.mainService.model.Event;
 import ru.practicum.mainService.model.QEvent;
 import ru.practicum.mainService.repository.publics.PublicEventRepository;
@@ -19,7 +20,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -72,7 +72,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     @Override
     public EventFullDto getEvent(Long eventId, HttpServletRequest request) {
 
-        Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
+        Event event = repository.findById(eventId).orElseThrow(() -> new NotFoundEventException(String.format("Event id=%s not found", eventId)));
         sendHit(request);
         return EventMapper.toFullEventDto(event);
     }

@@ -9,6 +9,8 @@ import ru.practicum.mainService.dto.request.ParticipationRequestDto;
 import ru.practicum.mainService.dto.request.RequestMapper;
 import ru.practicum.mainService.error.exception.IncorrectStateEventException;
 import ru.practicum.mainService.error.exception.LimitRequestParticipantException;
+import ru.practicum.mainService.error.exception.NotFoundCategoryException;
+import ru.practicum.mainService.error.exception.NotFoundEventException;
 import ru.practicum.mainService.model.*;
 import ru.practicum.mainService.repository.privates.PrivateEventRepository;
 import ru.practicum.mainService.repository.publics.PublicCategoryRepository;
@@ -19,7 +21,6 @@ import ru.practicum.mainService.service.publics.PublicUserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -69,7 +70,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         Event event = EventMapper.fromEventDto(eventDto);
         event.setState(State.PENDING);
-        event.setCategory(categoryRepository.findById(eventDto.getCategory()).orElseThrow(NoSuchElementException::new));
+        event.setCategory(categoryRepository.findById(eventDto.getCategory()).orElseThrow(() -> new NotFoundCategoryException(String.format("Category =%s not found", eventDto.getCategory()))));
         event.setInitiator(userService.getUser(userId));
         event.setCreatedOn(LocalDateTime.now());
         event.setConfirmedRequests(0L);
@@ -80,7 +81,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Override
     public EventFullDto patchEvent(Long userId, Long eventId, UpdateUserRequest eventDto) {
 
-        Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
+        Event event = repository.findById(eventId).orElseThrow(() -> new NotFoundEventException(String.format("Event id=%s not found", eventId)));
         checkStatus(eventDto, event);
         Event updatedEvent = repository.save(event);
 
@@ -96,7 +97,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         userService.getUser(userId);
 
-        Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);
+        Event event = repository.findById(eventId).orElseThrow(() -> new NotFoundEventException(String.format("Event id=%s not found", eventId)));
 
         Integer limit = event.getParticipantLimit();
         Long confirmedRequests = event.getConfirmedRequests();

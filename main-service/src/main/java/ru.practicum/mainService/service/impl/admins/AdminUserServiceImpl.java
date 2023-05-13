@@ -48,7 +48,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteUser(Long id) {
         User check = repository.findById(id).orElseThrow(NoSuchElementException::new);
         repository.deleteById(id);
     }

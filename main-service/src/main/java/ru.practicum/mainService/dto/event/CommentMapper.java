@@ -8,6 +8,12 @@ import ru.practicum.mainService.model.Comment;
 
 public class CommentMapper {
     public static CommentDto toCommentDto(Comment comment) {
-        return new CommentDto(comment.getId(), comment.getText(), comment.getEvent().getId(), comment.getAuthor().getName(), comment.getCreated(), comment.getModified());
+        CommentDto commentDto = new CommentDto();
+        commentDto.setId(comment.getId());
+        commentDto.setText(comment.getText());
+        commentDto.setCreated(comment.getCreated());
+        commentDto.setAuthor(comment.getAuthor().getName());
+        commentDto.setEvent(comment.getEvent().getId());
+        return commentDto;
     }
 }

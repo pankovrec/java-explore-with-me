@@ -60,7 +60,7 @@ public class AdminUserController {
     @DeleteMapping(path = "/{userId}")
     @Transactional
     public ResponseEntity deleteUser(@Positive @PathVariable(name = "userId") Long id) {
-        userService.delete(id);
+        userService.deleteUser(id);
         log.info("Удален пользователь с Id={}", id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

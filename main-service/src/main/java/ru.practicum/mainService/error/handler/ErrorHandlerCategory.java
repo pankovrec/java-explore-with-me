@@ -6,13 +6,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.mainService.controller.admins.AdminCategoryController;
+import ru.practicum.mainService.controller.privates.PrivateEventController;
 import ru.practicum.mainService.controller.publics.PublicCategoryController;
 import ru.practicum.mainService.error.ApiError;
 import ru.practicum.mainService.error.exception.DuplicateNameCategoryException;
 import ru.practicum.mainService.error.exception.NotEmptyCategoryException;
 import ru.practicum.mainService.error.exception.NotFoundCategoryException;
 
-@RestControllerAdvice(assignableTypes = {AdminCategoryController.class, PublicCategoryController.class})
+/**
+ * Error Category Handler.
+ */
+
+@RestControllerAdvice(assignableTypes = {AdminCategoryController.class, PublicCategoryController.class, PrivateEventController.class})
 public class ErrorHandlerCategory {
 
     @ExceptionHandler

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Accessors(chain = true)
 @Table(name = "comments")
 @AllArgsConstructor
 
@@ -24,18 +26,19 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "text", nullable = false)
-    private String text;
+
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
+
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
-    @Column(name = "created", nullable = false)
+
+    @Column(name = "text", nullable = false)
+    private String text;
+
+    @Column(name = "created_on", nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
-    @Column(name = "modified")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime modified;
 }
