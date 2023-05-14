@@ -11,7 +11,6 @@ import ru.practicum.mainService.dto.compilation.NewCompilationDto;
 import ru.practicum.mainService.dto.compilation.UpdateCompilationRequest;
 import ru.practicum.mainService.service.admins.AdminCompilationService;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
@@ -34,7 +33,6 @@ public class AdminCompilationController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<CompilationDto> postCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
         CompilationDto compilationDto = compilationService.postCompilation(newCompilationDto);
         log.info("Опубликована подборка {}", newCompilationDto);
@@ -42,7 +40,6 @@ public class AdminCompilationController {
     }
 
     @PatchMapping(path = "/{compId}")
-    @Transactional
     public CompilationDto patchCompilation(@Positive @PathVariable(name = "compId") Long compId,
                                            @RequestBody UpdateCompilationRequest updateCompilationRequest) {
         log.info("Обновлена подборка с Id={}", compId);
@@ -50,7 +47,6 @@ public class AdminCompilationController {
     }
 
     @DeleteMapping(path = "/{compId}")
-    @Transactional
     public ResponseEntity<Object> deleteCompilation(@Positive @PathVariable(name = "compId") Long compId) {
         compilationService.deleteCompilation(compId);
         log.info("Удалена подборка с Id={}", compId);

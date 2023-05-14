@@ -6,15 +6,26 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.mainService.controller.admins.AdminEventController;
+import ru.practicum.mainService.controller.privates.PrivateCommentController;
 import ru.practicum.mainService.controller.privates.PrivateEventController;
 import ru.practicum.mainService.error.ApiError;
-import ru.practicum.mainService.error.exception.EventDateIncorrectException;
-import ru.practicum.mainService.error.exception.IncorrectStateEventAdminException;
-import ru.practicum.mainService.error.exception.IncorrectStateEventException;
-import ru.practicum.mainService.error.exception.LimitRequestParticipantException;
+import ru.practicum.mainService.error.exception.*;
 
-@RestControllerAdvice(assignableTypes = {PrivateEventController.class, AdminEventController.class})
+/**
+ * Error Event Handler.
+ */
+
+@RestControllerAdvice(assignableTypes = {PrivateEventController.class, AdminEventController.class, PrivateCommentController.class})
 public class ErrorEventHandler {
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ApiError> notFoundEventException(final NotFoundEventException e) {
+        ApiError error = new ApiError(e.getMessage());
+        error.setReason("The required object was not found.");
+        error.setStatus(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)

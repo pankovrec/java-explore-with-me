@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.user.UserDto;
@@ -48,7 +47,6 @@ public class AdminUserController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<UserDto> postUser(@Valid @RequestBody UserDto userDto) {
         User user = UserMapper.fromUserDto(userDto);
         User newUser = userService.postUser(user);
@@ -58,9 +56,8 @@ public class AdminUserController {
     }
 
     @DeleteMapping(path = "/{userId}")
-    @Transactional
     public ResponseEntity deleteUser(@Positive @PathVariable(name = "userId") Long id) {
-        userService.delete(id);
+        userService.deleteUser(id);
         log.info("Удален пользователь с Id={}", id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

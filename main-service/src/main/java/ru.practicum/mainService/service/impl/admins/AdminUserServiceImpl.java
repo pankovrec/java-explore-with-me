@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.mainService.error.exception.ExistUserException;
 import ru.practicum.mainService.model.User;
 import ru.practicum.mainService.repository.admins.AdminUserRepository;
@@ -27,6 +28,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    @Transactional
     public User postUser(User user) {
         User check = repository.findByName(user.getName());
         if (check != null) {
@@ -48,7 +50,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public void delete(Long id) {
+    @Transactional
+    public void deleteUser(Long id) {
         User check = repository.findById(id).orElseThrow(NoSuchElementException::new);
         repository.deleteById(id);
     }

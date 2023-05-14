@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.event.*;
@@ -25,6 +24,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @Validated
+@RequestMapping(path = "users/{userId}/events")
 
 public class PrivateEventController {
 
@@ -38,7 +38,7 @@ public class PrivateEventController {
         this.validator = validator;
     }
 
-    @GetMapping(path = "users/{userId}/events")
+    @GetMapping
     public List<EventShortDto> getEvents(@NotNull @PathVariable(name = "userId") Long userId,
                                          @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                          @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -46,22 +46,21 @@ public class PrivateEventController {
         return eventService.getEvents(userId, from, size);
     }
 
-    @GetMapping(path = "users/{userId}/events/{eventId}")
+    @GetMapping(path = "{eventId}")
     public EventFullDto getEvent(@Positive @PathVariable(name = "userId") Long userId,
                                  @Positive @PathVariable(name = "eventId") Long eventId) {
         log.info("Получено событие с id={}", eventId);
         return eventService.getEvent(userId, eventId);
     }
 
-    @GetMapping(path = "users/{userId}/events/{eventId}/requests")
+    @GetMapping(path = "{eventId}/requests")
     public List<ParticipationRequestDto> getParticipants(@Positive @PathVariable(name = "userId") Long userId,
                                                          @Positive @PathVariable(name = "eventId") Long eventId) {
         log.info("Получен запрос на участие от пользователя с Id={} в событии с Id={}", userId, eventId);
         return eventService.getParticipants(userId, eventId);
     }
 
-    @PostMapping(path = "users/{userId}/events")
-    @Transactional
+    @PostMapping
     public ResponseEntity<EventFullDto> postEvent(@Positive @PathVariable(name = "userId") Long userId,
                                                   @Valid @NotNull @RequestBody NewEventDto newEventDto) {
         validator.eventValidateDate(newEventDto);
@@ -70,8 +69,7 @@ public class PrivateEventController {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
-    @PatchMapping(path = "users/{userId}/events/{eventId}")
-    @Transactional
+    @PatchMapping(path = "{eventId}")
     public EventFullDto patchEvent(@Positive @PathVariable(name = "userId") Long userId,
                                    @Positive @PathVariable(name = "eventId") Long eventId,
                                    @NotNull @RequestBody UpdateUserRequest updateUserRequest) {
@@ -80,8 +78,7 @@ public class PrivateEventController {
         return eventService.patchEvent(userId, eventId, updateUserRequest);
     }
 
-    @PatchMapping(path = "users/{userId}/events/{eventId}/requests")
-    @Transactional
+    @PatchMapping(path = "{eventId}/requests")
     public RequestStatusUpdateResult changeStatusOfRequest(@Positive @PathVariable(name = "userId") Long userId,
                                                            @Positive @PathVariable(name = "eventId") Long eventId,
                                                            @NotNull @RequestBody RequestStatusUpdateRequest

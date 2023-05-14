@@ -2,11 +2,10 @@ package ru.practicum.mainService.service.impl.publics;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.mainService.error.exception.NotFoundUserException;
 import ru.practicum.mainService.model.User;
 import ru.practicum.mainService.repository.publics.PublicUserRepository;
 import ru.practicum.mainService.service.publics.PublicUserService;
-
-import java.util.NoSuchElementException;
 
 /**
  * UserServicePublicImpl
@@ -24,6 +23,6 @@ public class PublicUserServiceImpl implements PublicUserService {
 
     @Override
     public User getUser(Long userId) {
-        return repository.findById(userId).orElseThrow(NoSuchElementException::new);
+        return repository.findById(userId).orElseThrow(() -> new NotFoundUserException(String.format("User id=%s not found", userId)));
     }
 }

@@ -22,5 +22,5 @@ public interface AdminUserService {
     /**
      * Удалить пользователя
      */
-    void delete(Long id);
+    void deleteUser(Long id);
 }

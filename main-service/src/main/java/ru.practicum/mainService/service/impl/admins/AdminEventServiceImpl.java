@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.mainService.dto.event.EventFullDto;
 import ru.practicum.mainService.dto.event.EventMapper;
 import ru.practicum.mainService.dto.event.UpdateAdminRequest;
@@ -67,6 +68,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto patchEvent(Long eventId, UpdateAdminRequest updateAdminRequest) {
 
         Event event = repository.findById(eventId).orElseThrow(NoSuchElementException::new);

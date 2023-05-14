@@ -9,7 +9,6 @@ import ru.practicum.mainService.dto.event.UpdateAdminRequest;
 import ru.practicum.mainService.service.admins.AdminEventService;
 import ru.practicum.mainService.validator.EventValidate;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -49,7 +48,6 @@ public class AdminEventController {
     }
 
     @PatchMapping(path = "/{eventId}")
-    @Transactional
     public EventFullDto patchEvent(@NotNull @PathVariable(name = "eventId") Long eventId,
                                    @NotNull @RequestBody UpdateAdminRequest updateAdminRequest) {
         validator.eventValidateDate(updateAdminRequest);
