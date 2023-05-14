@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.event.*;
@@ -62,7 +61,6 @@ public class PrivateEventController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<EventFullDto> postEvent(@Positive @PathVariable(name = "userId") Long userId,
                                                   @Valid @NotNull @RequestBody NewEventDto newEventDto) {
         validator.eventValidateDate(newEventDto);
@@ -72,7 +70,6 @@ public class PrivateEventController {
     }
 
     @PatchMapping(path = "{eventId}")
-    @Transactional
     public EventFullDto patchEvent(@Positive @PathVariable(name = "userId") Long userId,
                                    @Positive @PathVariable(name = "eventId") Long eventId,
                                    @NotNull @RequestBody UpdateUserRequest updateUserRequest) {
@@ -82,7 +79,6 @@ public class PrivateEventController {
     }
 
     @PatchMapping(path = "{eventId}/requests")
-    @Transactional
     public RequestStatusUpdateResult changeStatusOfRequest(@Positive @PathVariable(name = "userId") Long userId,
                                                            @Positive @PathVariable(name = "eventId") Long eventId,
                                                            @NotNull @RequestBody RequestStatusUpdateRequest

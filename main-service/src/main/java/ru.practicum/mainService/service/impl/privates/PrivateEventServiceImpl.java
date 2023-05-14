@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.mainService.dto.event.*;
 import ru.practicum.mainService.dto.request.ParticipationRequestDto;
 import ru.practicum.mainService.dto.request.RequestMapper;
@@ -66,6 +67,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto postEvent(Long userId, NewEventDto eventDto) {
 
         Event event = EventMapper.fromEventDto(eventDto);
@@ -79,6 +81,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto patchEvent(Long userId, Long eventId, UpdateUserRequest eventDto) {
 
         Event event = repository.findById(eventId).orElseThrow(() -> new NotFoundEventException(String.format("Event id=%s not found", eventId)));
@@ -89,6 +92,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
+    @Transactional
     public RequestStatusUpdateResult changeStatusOfRequest(Long userId,
                                                            Long eventId,
                                                            RequestStatusUpdateRequest requestStatusUpdateRequest) {

@@ -2,6 +2,7 @@ package ru.practicum.mainService.service.impl.privates;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.mainService.dto.event.CommentDto;
 import ru.practicum.mainService.dto.event.CommentMapper;
 import ru.practicum.mainService.dto.event.NewCommentDto;
@@ -37,6 +38,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
 
 
     @Override
+    @Transactional
     public CommentDto postComment(Long userId, Long eventId, NewCommentDto comment) {
         User user = userService.getUser(userId);
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(String.format("Event id=%s not found", eventId)));
@@ -55,6 +57,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     }
 
     @Override
+    @Transactional
     public CommentDto patchComment(Long userId, Long commentId, CommentDto comment) {
         Comment checkComment = getCheckComment(userId, commentId);
         Comment patching = new Comment();
@@ -67,6 +70,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long userId, Long commentId) {
         User checkUser = userService.getUser(userId);
         Comment checkComment = getCheckComment(userId, commentId);

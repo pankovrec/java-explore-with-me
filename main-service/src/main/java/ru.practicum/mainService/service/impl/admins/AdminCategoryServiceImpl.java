@@ -2,6 +2,7 @@ package ru.practicum.mainService.service.impl.admins;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.mainService.dto.category.CategoryDto;
 import ru.practicum.mainService.dto.category.CategoryMapper;
 import ru.practicum.mainService.dto.category.NewCategoryDto;
@@ -33,6 +34,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto postCategory(NewCategoryDto newCategoryDto) {
         List<Category> check = repository.findAllByName(newCategoryDto.getName());
         checkDuplicateName(newCategoryDto, check);
@@ -42,6 +44,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto patchCategory(Long catId, CategoryDto categoryDto) {
         List<Category> check = repository.findAllByName(categoryDto.getName());
         checkDuplicateName(categoryDto, check);
@@ -49,6 +52,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(Long catId) {
         List<Event> check = eventRepository.findAllByCategoryId(catId);
         checkEmptyCategory(check);

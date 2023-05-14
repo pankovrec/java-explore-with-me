@@ -10,7 +10,6 @@ import ru.practicum.mainService.dto.category.CategoryDto;
 import ru.practicum.mainService.dto.category.NewCategoryDto;
 import ru.practicum.mainService.service.admins.AdminCategoryService;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
@@ -33,7 +32,6 @@ public class AdminCategoryController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<CategoryDto> postCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
         CategoryDto categoryDto = categoryService.postCategory(newCategoryDto);
         log.info("Опубликована новая категория {}", newCategoryDto);
@@ -41,7 +39,6 @@ public class AdminCategoryController {
     }
 
     @PatchMapping(path = "/{catId}")
-    @Transactional
     public ResponseEntity<CategoryDto> patchCategory(@Positive @PathVariable(name = "catId") Long catId,
                                                      @Valid @RequestBody CategoryDto categoryDto) {
         CategoryDto updateCategory = categoryService.patchCategory(catId, categoryDto);
@@ -50,7 +47,6 @@ public class AdminCategoryController {
     }
 
     @DeleteMapping(path = "/{catId}")
-    @Transactional
     public ResponseEntity deleteCategory(@Positive @PathVariable(name = "catId") Long catId) {
         categoryService.deleteCategory(catId);
         log.info("Удалена категория с Id={}", catId);

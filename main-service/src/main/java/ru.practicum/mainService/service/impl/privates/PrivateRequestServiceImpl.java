@@ -2,6 +2,7 @@ package ru.practicum.mainService.service.impl.privates;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.mainService.dto.request.ParticipationRequestDto;
 import ru.practicum.mainService.dto.request.RequestMapper;
 import ru.practicum.mainService.error.exception.ExistRequestException;
@@ -49,6 +50,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto postRequest(Long userId, Long eventId) {
 
         User user = userService.getUser(userId);
@@ -74,6 +76,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         userService.getUser(userId);
         Request request = repository.findById(requestId).orElseThrow(NoSuchElementException::new);

@@ -2,7 +2,6 @@ package ru.practicum.mainService.controller.privates;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.event.CommentDto;
 import ru.practicum.mainService.dto.event.NewCommentDto;
@@ -24,7 +23,6 @@ public class PrivateCommentController {
         this.commentService = commentService;
     }
 
-    @Transactional
     @PostMapping(path = "/users/{userId}/events/{eventId}/comments")
     public ResponseEntity<CommentDto> postComment(@NotNull @Positive @PathVariable(name = "userId") Long userId,
                                                   @NotNull @Positive @PathVariable(name = "eventId") Long eventId,
@@ -33,7 +31,6 @@ public class PrivateCommentController {
         return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
     }
 
-    @Transactional
     @PatchMapping(path = "/users/{userId}/comments/{commentId}")
     public CommentDto patchComment(@NotNull @Positive @PathVariable(name = "userId") Long userId,
                                    @NotNull @Positive @PathVariable(name = "commentId") Long commentId,
@@ -41,7 +38,6 @@ public class PrivateCommentController {
         return commentService.patchComment(userId, commentId, comment);
     }
 
-    @Transactional
     @DeleteMapping(path = "/users/{userId}/comments/{commentId}")
     public ResponseEntity<HttpStatus> deleteComment(@NotNull @Positive @PathVariable(name = "userId") Long userId,
                                                     @NotNull @Positive @PathVariable(name = "commentId") Long commentId) {

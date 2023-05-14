@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainService.dto.request.ParticipationRequestDto;
 import ru.practicum.mainService.service.privates.PrivateRequestService;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -38,7 +37,6 @@ public class PrivateRequestController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<ParticipationRequestDto> postRequest(@Positive @PathVariable(name = "userId") Long userId,
                                                                @Positive @RequestParam(name = "eventId") Long eventId) {
         ParticipationRequestDto requestDto = requestService.postRequest(userId, eventId);
@@ -47,7 +45,6 @@ public class PrivateRequestController {
     }
 
     @PatchMapping(path = "{requestId}/cancel")
-    @Transactional
     public ParticipationRequestDto cancelRequest(@Positive @PathVariable(name = "userId") Long userId,
                                                  @Positive @PathVariable(name = "requestId") Long requestId) {
         log.info("Пользователь с Id={} отменил запрос с Id={} на участие в событии", userId, requestId);

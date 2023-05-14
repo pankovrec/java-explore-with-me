@@ -2,6 +2,7 @@ package ru.practicum.mainService.service.impl.admins;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.mainService.dto.compilation.CompilationDto;
 import ru.practicum.mainService.dto.compilation.CompilationMapper;
 import ru.practicum.mainService.dto.compilation.NewCompilationDto;
@@ -33,6 +34,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     }
 
     @Override
+    @Transactional
     public CompilationDto postCompilation(NewCompilationDto newCompilationDto) {
         Compilation compilation = CompilationMapper.fromCompilationDto(newCompilationDto);
         List<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
@@ -41,6 +43,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     }
 
     @Override
+    @Transactional
     public CompilationDto patchCompilation(Long compId, UpdateCompilationRequest updateCompilationRequest) {
 
         Compilation compilation = repository.findById(compId).orElseThrow(NoSuchElementException::new);
@@ -56,6 +59,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     }
 
     @Override
+    @Transactional
     public void deleteCompilation(Long compId) {
         repository.delete(repository.findById(compId).orElseThrow(NoSuchElementException::new));
     }
